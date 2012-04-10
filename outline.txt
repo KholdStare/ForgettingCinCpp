@@ -1,0 +1,68 @@
+Outline of main points of presentation.
+
+- History of C++
+
+- Outline of compilation model for C and then C++
+    + compilation/translation units
+    + preprocessor          -> resolves includes/defines
+    + compiler/assembler    -> compiles translation unit to object file
+    + linker                -> links all object file into single executable
+
+- Things to watch out for in C++
+    - Some features do not jive with C-like programming
+    - inheritance
+    - exceptions
+
+- Avoid #define constants
+    - Carries no type information
+    + Use const globals instead (note about const correctness)
+
+- Avoid macros
+    - Source of constant not visible to compiler leading to errors in obscure location which you then need to trace back to the macro
+    - Copy-pastes arguments as texts.
+    - Bracketing problems. Very tricky
+    - Can create undefined behaviour or unintentional behaviour as a result
+    + Use inline function if performance is a concern 
+    - What about generality? The same macro can be reused for different types (Can we live with drawbacks just for this?)
+    + No need to, use template functions!
+
+- Declare variables when needed
+    - Declaring everything in the kitchen sink at beginning of scope was required in C
+    - If function is large, it is often tedious to keep track of the mess. Unused variables?
+    + In C99 and C++ variables can and should be declared when needed, as it helps the compiler to optimize code based on usage.
+
+- Prefer references over pointers
+    + Cannot be null (~ish), so less null-checks (perhaps give example of how it is passed down?)
+    + non-reassignable
+    - use pointers where results null object is a valid option, and need re-assignability
+    + & for arguments that are expected to be changed, const& for everything else
+    + (mention better/tighter specification, helps programmers, avoids bugs)
+
+- Use STL ( mention at end of first talk )
+
+- Classes overview
+    + members
+    + methods
+    + constructors
+    + destructor (very important)
+    + allocation on stack
+    + allocation on heap through new/delete, allows polymorphism
+
+- Use initializer lists in constructors (don't forget copy constructors!)
+
+- Copy constructors
+    - if class has pointers, default constructor will blindly copy the pointer, not the contents
+
+- Use RAII
+    + through use of destructors
+    + smart pointer example (new delete), with exceptions
+
+- Casting 
+    - refrain from using the C-style bracket cast
+    - Very hard to see and search for in code
+    - Less control and safety
+    + Use one of static_cast, dynamic_cast or reinterpret_cast (also there is const_cast)
+
+- Follow const-correctness
+
+- Use STL ( go into detail )
