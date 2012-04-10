@@ -31,12 +31,16 @@ Outline of main points of presentation.
     - If function is large, it is often tedious to keep track of the mess. Unused variables?
     + In C99 and C++ variables can and should be declared when needed, as it helps the compiler to optimize code based on usage.
 
+- Use new/delete, not malloc/free
+    + if dynamically sized array is needed (mention SV bridge for sigma) just use std::vector<Type>
+
 - Prefer references over pointers
     + Cannot be null (~ish), so less null-checks (perhaps give example of how it is passed down?)
     + non-reassignable
     - use pointers where results null object is a valid option, and need re-assignability
     + & for arguments that are expected to be changed, const& for everything else
     + (mention better/tighter specification, helps programmers, avoids bugs)
+
 
 - Use STL ( mention at end of first talk )
 
@@ -45,8 +49,10 @@ Outline of main points of presentation.
     + methods
     + constructors
     + destructor (very important)
+    + object ( instance ) vs class 
     + allocation on stack
     + allocation on heap through new/delete, allows polymorphism
+    + this pointer inside of methods
 
 - Use initializer lists in constructors (don't forget copy constructors!)
 
@@ -57,6 +63,21 @@ Outline of main points of presentation.
     + through use of destructors
     + smart pointer example (new delete), with exceptions
 
+- Inheritance
+    + explain simple inheritance, (no virtual methods yet)
+    + mention polymorphism
+
+
+- Classes (again) behind the scenes
+    + members are in struct one per object( instance of class ),
+    + methods are standalone, separate from the object
+    + when a method is called, object is implicitly passed as this into method
+    + e.g. when calling object->someMethod(arg), it is actually someMethod(object, arg);
+
+    + describe location of members of each calss in inheritance hierarchy
+    - class C : A, B
+    + a pointer to object of type can be pointing 
+
 - Casting 
     - refrain from using the C-style bracket cast
     - Very hard to see and search for in code
@@ -66,3 +87,4 @@ Outline of main points of presentation.
 - Follow const-correctness
 
 - Use STL ( go into detail )
+
