@@ -1,16 +1,21 @@
 Outline of main points of presentation.
 
 - Forgetting the C in C++
-    - Indended for those comfortable with C
+    - Intended for those comfortable with C
     - Overview of C++, and good C++ style, from a C programmer's perspective
     - Emphasis on fixing habbits learnt from C that are counter-productive or dangerous in C++
     - More in-depth guidelines for C++ can be found in books mentioned later
 
+"Programs must be written for people to read, and only incientally for machines to execute."
+-Abelson/Sussman, SICP
+
 - History of C++
 
 - Outline of compilation model for C and then C++
-    - To understand some problems, the playing field should be known
-    - Need to know how the code that is written compiles to executables
+    - To understand some problems, need to set the stage
+    - How does the code that is written, compile to executables?
+    - When beginning to learn C, rules are taught first, without reasoning behind them
+    - Afterwards, knowledge of compilation is assumed, so nobody knows it
 
     + compilation/translation units
     + preprocessor          -> resolves includes/defines
@@ -19,9 +24,13 @@ Outline of main points of presentation.
 
 - Things to watch out for in C++
     - Some features do not jive with C-like programming
-    - function overloading TODO: check if C99+ supports
+    - function overloading
     - inheritance
     - exceptions
+
+- streams
+The biggest single advantage to the stream methods is they are type-safe. If you change a variable's type, the subsequent stream operations using that variable will either automatically accommodate the change, or will indicate an incompatibility at compile time. In older C code, any number of difficult-to-detect bugs result from either incorrectly specifying a variable's type, or changing the variable's type and not remembering all the places where the specifiers need to be changed.
+http://www.arachnoid.com/cpptutor/student3.html
 
 - Avoid #define constants
     - Carries no type information
@@ -29,13 +38,11 @@ Outline of main points of presentation.
     + Use const globals instead (note about const correctness)
 
 - Avoid macros
+    - https://www.securecoding.cert.org/confluence/display/cplusplus/PRE00-CPP.+Avoid+defining+macros
     - Source of constant not visible to compiler leading to errors in obscure location which you then need to trace back to the macro
     - Copy-pastes arguments as text.
-    - Easy to abuse with invalid expression which become valid after substitution. Leads to obfuscation
-        #define MAGIC( a, b ) (a < b) ? (a + b) : (a - b)
+    - Easy to abuse with invalid expressions which become valid after substitution. Leads to obfuscation
 
-        int a = MAGIC( 2+(1 , 1)+3 );
-        int a = 2+(1 < 1)+3 ? 2+(1 + 1)+3 : 2+(1 - 1)+3
     - Bracketing problems. Tricky, ugly, relies on human programmer catching all possibilities of abuse
     - Can create undefined behaviour or unintentional behaviour as a result
 
@@ -85,6 +92,8 @@ Outline of main points of presentation.
 - Copy constructors
     - if class has pointers, default constructor will blindly copy the pointer, not the contents
 
+- Follow const-correctness
+
 - Use RAII
     + through use of destructors
     + smart pointer example (new delete), with exceptions
@@ -109,8 +118,6 @@ Outline of main points of presentation.
     - Very hard to see and search for in code
     - Less control and safety
     + Use one of static_cast, dynamic_cast or reinterpret_cast (also there is const_cast)
-
-- Follow const-correctness
 
 - Use STL ( go into detail )
 
