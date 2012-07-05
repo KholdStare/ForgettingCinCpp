@@ -84,24 +84,64 @@
 
     %\opencutright
 
+    \begin{columns}[t]
+        \column{7cm}
+        \begin{itemize}
+            \item<1->Started by Bjarne Stroustrup in 1979 as "C with Classes"
+                \begin{itemize}
+                    \item At Bell labs
+                    \item "Down the hall" from Dennis Ritchie (creator of C)
+                \end{itemize}
+            \item<1->Renamed to C++ in 1983, commercially implemented in 1985
+            \item<2->1990s: stream IO, STL, ISO Standard in 98
+            \item<3->2000s: Boost, TR1 in 2007
+            \item<4->2010s: C++11 in 2011
+        \end{itemize}
+        \column[T]{4cm}
+        \includegraphics[width=4cm]{220px-BjarneStroustrup.jpg}
+    %\end{columns}
+    %\begin{columns}[t]
+        %\column{11cm}
+    \end{columns}
+
     %\begin{cutout}{0}{.65\linewidth}{0pt}{6}
-    \begin{itemize}
-        \item<1->Started by Bjarne Stroustrup in 1979 as "C with Classes"
-            \begin{itemize}
-                \item At Bell labs
-                \item "Down the hall" from Dennis Ritchie (creator of C)
-            \end{itemize}
-        \item<1->Renamed to C++ in 1983, commercially implemented in 1985
-        \item<2->1990s: stream IO, STL, ISO Standard in 98
-        \item<3->2000s: Boost, TR1 in 2007
-        \item<4->2010s: C++11 in 2011
-    \end{itemize}
     %\end{cutout}
 \end{frame}
 
 \begin{frame}
     \frametitle{C Compilation model}
+    \framesubtitle{A single source file}
+    \begin{columns}[t]
+        \column{4cm}
+        \begin{itemize}
+            \item One source file at a time
+            \item Preprocessor \emph{resolves all directives}
+            \item Compiled to an object file
+            \item Missing external function definitions
+        \end{itemize}
+        \column[T]{8cm}
+        \includegraphics[height=9cm,angle=-90]{diagrams/c_compilation_model.pdf}
+    \end{columns}
+\end{frame}
 
+\begin{frame}
+    \frametitle{C Compilation model}
+    \framesubtitle{Linking}
+    \begin{columns}[t]
+        \column{4cm}
+        \begin{itemize}
+            \item Linker combines several translation units
+            \item Resolves external dependencies
+        \end{itemize}
+        \column[T]{8cm}
+        \includegraphics[height=9cm,angle=-90]{diagrams/c_compilation_model_linker.pdf}
+    \end{columns}
+\end{frame}
+
+\begin{frame}
+    \frametitle{C Compilation model}
+    \framesubtitle{A typical project}
+    \includegraphics[height=12cm,angle=-90]{diagrams/c_compilation_model_full.pdf}
 \end{frame}
 
 \end{document}
