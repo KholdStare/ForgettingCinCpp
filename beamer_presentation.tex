@@ -1,9 +1,59 @@
 \documentclass{beamer}
 
 \usetheme[secheader]{Boadilla}
-\usecolortheme{dolphin}
+\usecolortheme{beetle}
 \usepackage[latin1]{inputenc}
-\usepackage{cutwin}
+\usepackage{listings} % for code syntax highlighting
+\usepackage{color}
+
+\usepackage{inconsolata} % for code
+\usepackage{lmodern}
+\renewcommand*\familydefault{\sfdefault} 
+%\usepackage[T1]{fontenc}
+%\usepackage[default]{gfsneohellenic}
+ 
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{HTML}{3A3A3A}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{codebg}{HTML}{1C1C1C}
+\definecolor{codefg}{HTML}{D0D0D0}
+\definecolor{codekeyword}{HTML}{87AFDF}
+\definecolor{codecomment}{HTML}{808080}
+\definecolor{pastelred}{HTML}{DF8787}
+
+\definecolor{javared}{rgb}{0.6,0,0} % for strings
+
+% tweak beamer theme
+%\setbeamercolor{background canvas}{bg=gray}
+ 
+% tweak listings for code ==================
+\lstset{ %
+  language=C++,                % the language of the code
+  basicstyle=\small\ttfamily\color{codefg},           % the size of the fonts that are used for the code
+  %numbers=left,                   % where to put the line-numbers
+  %numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+  %stepnumber=2,                   % the step between two line-numbers. If it's 1, each line 
+                                  %% will be numbered
+  %numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{codebg},      % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  %frame=single,                   % adds a frame around the code
+  rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+  tabsize=2,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  title=\lstname,                   % show the filename of files included with \lstinputlisting;
+                                  % also try caption instead of title
+  keywordstyle=\color{codekeyword}\bfseries,
+  stringstyle=\color{javared},
+  commentstyle=\color{codecomment},
+  escapeinside={\%*}{*)},            % if you want to add LaTeX within your code
+  morekeywords={*,...}               % if you want to add more keywords to the set
+}
+% ==========================================
 
 \title{Forgetting the C in C++}
 \author{Alexander Kondratskiy}
@@ -15,6 +65,7 @@
 \frame{\titlepage}
 
 \section{Introduction}
+\frame{\sectionpage}
 
 \frame {
     \frametitle{What is the talk about?}
@@ -67,6 +118,7 @@
 }
 
 \section{Prerequisites}
+\frame{\sectionpage}
 
 \begin{frame}
     \frametitle{History of C++}
@@ -120,7 +172,7 @@
             \item Missing external function definitions
         \end{itemize}
         \column[T]{8cm}
-        \includegraphics[height=9cm,angle=-90]{diagrams/c_compilation_model.pdf}
+        \includegraphics[width=7cm]{diagrams/c_compilation_model.png}
     \end{columns}
 \end{frame}
 
@@ -142,6 +194,102 @@
     \frametitle{C Compilation model}
     \framesubtitle{A typical project}
     \includegraphics[height=12cm,angle=-90]{diagrams/c_compilation_model_full.pdf}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\alert{C++} Compilation model}
+    \begin{itemize}
+        \item Same as C compilation model
+        \item Template instantiation happens in the compiler
+    \end{itemize}
+\end{frame}
+
+% define a counter for rules
+\newcounter{rulecount}
+\newcommand{\declarerule}{
+    \textbf{\alert{Rule \therulecount:}}
+}
+
+\section{Preprocessor}
+\frame{\sectionpage}
+
+\begin{frame}
+    \frametitle{\declarerule Avoid the preprocessor}
+    \begin{itemize}
+        \item Macros are text substitution
+        \item Macros not subject to scope rules
+        \item Compiler does not see any preprocessor directives only final result of substitution
+            \begin{itemize}
+                \item No meaningful error checking!
+            \end{itemize}
+        \item Used naively can lead to subtle, hard to find bugs
+    \end{itemize}
+\end{frame}
+
+\stepcounter{rulecount}
+\begin{frame}[fragile]
+    \frametitle{\declarerule Avoid \#define constants}
+\begin{lstlisting}
+#define DAYSINWEEK 7
+for (i = 0; i < l; ++i) {
+    printf("i: %d\n", i);
+}
+\end{lstlisting}
+    \begin{itemize}
+        \item Macros are text substitution
+        \item Compiler does not see any preprocessor directives
+        \itemize{
+            \item No meaningful error checking!
+            }
+    \end{itemize}
+\end{frame}
+
+\stepcounter{rulecount}
+\begin{frame}[fragile]
+    \frametitle{\declarerule Avoid macro functions}
+Given an innocent macro definition:
+\begin{lstlisting}
+#define CIRCLE_AREA(RADIUS) 3.14 * RADIUS * RADIUS
+\end{lstlisting}
+You write:
+\begin{lstlisting}
+double area = CIRCLE_AREA( a + b );
+\end{lstlisting}
+The compiler sees:
+\begin{lstlisting}
+double area = 3.14 * a + b * a + b;
+\end{lstlisting}
+\end{frame}
+
+% Fixing macro problem with brackets
+\begin{frame}[fragile]
+    \frametitle{\declarerule Avoid macro functions}
+    \textbf{Macro Solution:} Wrap arguments in brackets:
+\begin{lstlisting}
+#define CIRCLE_AREA(RADIUS) 3.14 * (RADIUS) * (RADIUS)
+\end{lstlisting}
+\begin{itemize}
+    \item This is just a bandaid
+\end{itemize}
+    \textbf{Better solution:} inline functions:
+\begin{lstlisting}
+inline double circle_area(double radius) {
+    return 3.14 * radius * radius;
+}
+\end{lstlisting}
+\begin{itemize}
+    \item Type safe
+    \item Checked by compiler
+    \item Scope
+\end{itemize}
+\end{frame}
+
+% Demonstrate problem with multiline macros
+\begin{frame}[fragile]
+    \frametitle{\declarerule Avoid macro functions}
+\begin{lstlisting}
+#define CIRCLE_AREA(RADIUS) 3.14 * (RADIUS) * (RADIUS)
+\end{lstlisting}
 \end{frame}
 
 \end{document}
