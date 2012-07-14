@@ -5,6 +5,7 @@
 \usepackage[latin1]{inputenc}
 \usepackage{listings} % for code syntax highlighting
 \usepackage{color}
+\usepackage{caption}
 
 \usepackage{inconsolata} % for code
 \usepackage{lmodern}
@@ -12,21 +13,27 @@
 %\usepackage[T1]{fontenc}
 %\usepackage[default]{gfsneohellenic}
  
-\definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{HTML}{3A3A3A}
-\definecolor{mauve}{rgb}{0.58,0,0.82}
-\definecolor{codebg}{HTML}{1C1C1C}
+\definecolor{codebg}{HTML}{2C2C2C}
 \definecolor{codefg}{HTML}{D0D0D0}
-\definecolor{codekeyword}{HTML}{87AFDF}
+\definecolor{codekeyword}{HTML}{87AFEF}
 \definecolor{codecomment}{HTML}{808080}
 \definecolor{pastelred}{HTML}{DF8787}
 
-\definecolor{javared}{rgb}{0.6,0,0} % for strings
+\definecolor{codestring}{HTML}{DFDF87} % for strings
 
 % tweak beamer theme
 %\setbeamercolor{background canvas}{bg=gray}
+\setbeamercolor{framesubtitle}{fg=white}
+\setbeamercolor{author}{fg=white}
+\setbeamercolor{date}{fg=white}
  
 % tweak listings for code ==================
+
+% caption stuff
+\DeclareCaptionFormat{listing}{\parbox{\textwidth}{#1#2#3}}
+\captionsetup[lstlisting]{format=listing}
+
 \lstset{ %
   language=C++,                % the language of the code
   basicstyle=\small\ttfamily\color{codefg},           % the size of the fonts that are used for the code
@@ -42,13 +49,13 @@
   %frame=single,                   % adds a frame around the code
   rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
   tabsize=2,                      % sets default tabsize to 2 spaces
-  captionpos=b,                   % sets the caption-position to bottom
+  captionpos=t,                   % sets the caption-position to bottom
   breaklines=true,                % sets automatic line breaking
   breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
   title=\lstname,                   % show the filename of files included with \lstinputlisting;
                                   % also try caption instead of title
   keywordstyle=\color{codekeyword}\bfseries,
-  stringstyle=\color{javared},
+  stringstyle=\color{codestring},
   commentstyle=\color{codecomment},
   escapeinside={\%*}{*)},            % if you want to add LaTeX within your code
   morekeywords={*,...}               % if you want to add more keywords to the set
@@ -77,18 +84,19 @@
     \end{itemize}
 }
 
+% Buzzwords
 \frame {
     \frametitle{Motivation}
     \begin{itemize}
         \item<1->C++ has evolved
             % TODO: find word 
-        \item<2->\alert{Safety}/
+        \item<2->\alert{Safety}/Robustness
             \begin{itemize}
                 \item Resource management (including memory)
                 \item Type safety
                 \item Compiler checks
             \end{itemize}
-        \item<2->\alert{Readability}/maintainability
+        \item<2->\alert{Readability}/Maintainability
             \begin{exampleblock}{}
                 ``Programs must be written for people to read, and only incidentally for machines to execute.''
                 \hspace*\fill{\small--- Abelson/Sussman, SICP}
@@ -106,7 +114,26 @@
     \end{itemize}
 }
 
-\frame {
+% Guiding Principles
+\begin{frame}
+    \frametitle{Motivation}
+    \framesubtitle{Guiding Principles}
+    % TODO: move to STL?
+    \begin{exampleblock}{}
+        ``If I have seen further, it is by standing on the shoulders of giants''
+
+        \hspace*\fill{\small--- Isaac Newton}
+    \end{exampleblock}
+
+    \begin{exampleblock}{}
+        ``Make interfaces easy to use correctly and hard to use incorrectly''
+
+        \hspace*\fill{\small--- Scott Meyers}
+    \end{exampleblock}
+
+\end{frame}
+
+\begin{frame}
     \frametitle{Method}
     \begin{itemize}
         \item<1->Observe common C idiom
@@ -115,27 +142,13 @@
         \item<1->Gains from the alternative
         \item<2->Learn new techniques/features along the way
     \end{itemize}
-}
+\end{frame}
 
 \section{Prerequisites}
 \frame{\sectionpage}
 
 \begin{frame}
     \frametitle{History of C++}
-
-    %\renewcommand\windowpagestuff{%
-        %\hfill
-        %\includegraphics[height=3cm]{220px-BjarneStroustrup.jpg}
-        %%\par{\usebeamercolor[fg]{caption name}%
-            %%\usebeamerfont*{caption name}\figurename%
-        %%\usebeamertemplate{caption label separator}}%
-        %%\raggedright%
-        %%\usebeamerfont*{caption}%
-        %%Bjarne Stroustrup%
-    %}
-
-    %\opencutright
-
     \begin{columns}[t]
         \column{7cm}
         \begin{itemize}
@@ -151,15 +164,10 @@
         \end{itemize}
         \column[T]{4cm}
         \includegraphics[width=4cm]{220px-BjarneStroustrup.jpg}
-    %\end{columns}
-    %\begin{columns}[t]
-        %\column{11cm}
     \end{columns}
-
-    %\begin{cutout}{0}{.65\linewidth}{0pt}{6}
-    %\end{cutout}
 \end{frame}
 
+% C Compilation
 \begin{frame}
     \frametitle{C Compilation model}
     \framesubtitle{A single source file}
@@ -172,10 +180,11 @@
             \item Missing external function definitions
         \end{itemize}
         \column[T]{8cm}
-        \includegraphics[width=7cm]{diagrams/c_compilation_model.png}
+        \includegraphics[height=9cm,angle=-90]{diagrams/c_compilation_model.pdf}
     \end{columns}
 \end{frame}
 
+% Linker
 \begin{frame}
     \frametitle{C Compilation model}
     \framesubtitle{Linking}
@@ -190,10 +199,11 @@
     \end{columns}
 \end{frame}
 
+% Linker + Compiler large diagram
 \begin{frame}
     \frametitle{C Compilation model}
     \framesubtitle{A typical project}
-    \includegraphics[height=12cm,angle=-90]{diagrams/c_compilation_model_full.pdf}
+    \includegraphics[height=12cm,angle=-90]{diagrams/c_compilation_model_2.pdf}
 \end{frame}
 
 \begin{frame}
@@ -206,9 +216,7 @@
 
 % define a counter for rules
 \newcounter{rulecount}
-\newcommand{\declarerule}{
-    \textbf{\alert{Rule \therulecount:}}
-}
+\newcommand{\declarerule}{\textbf{\color{blue}{Rule \therulecount:}} }
 
 \section{Preprocessor}
 \frame{\sectionpage}
@@ -231,65 +239,137 @@
     \frametitle{\declarerule Avoid \#define constants}
 \begin{lstlisting}
 #define DAYSINWEEK 7
-for (i = 0; i < l; ++i) {
-    printf("i: %d\n", i);
-}
 \end{lstlisting}
-    \begin{itemize}
-        \item Macros are text substitution
-        \item Compiler does not see any preprocessor directives
-        \itemize{
-            \item No meaningful error checking!
-            }
-    \end{itemize}
+% TODO: finish
 \end{frame}
 
 \stepcounter{rulecount}
 \begin{frame}[fragile]
     \frametitle{\declarerule Avoid macro functions}
-Given an innocent macro definition:
-\begin{lstlisting}
-#define CIRCLE_AREA(RADIUS) 3.14 * RADIUS * RADIUS
+\begin{uncoverenv}<1->
+\begin{lstlisting}[title=Given an innocent macro definition]
+#define CIRCLE_AREA(R) 3.14 * R * R
 \end{lstlisting}
-You write:
-\begin{lstlisting}
-double area = CIRCLE_AREA( a + b );
+\end{uncoverenv}
+
+\begin{uncoverenv}<2->
+\begin{lstlisting}[title=You write]
+double total_area = 2 * CIRCLE_AREA( a + b );
 \end{lstlisting}
-The compiler sees:
-\begin{lstlisting}
-double area = 3.14 * a + b * a + b;
+\end{uncoverenv}
+
+\begin{uncoverenv}<3->
+\begin{lstlisting}[title=The compiler sees]
+double total_area = 2 * 3.14 * a + b * a + b;
 \end{lstlisting}
+\begin{itemize}
+    \item This code compiles with no errors,
+        but is clearly not what is intended
+\end{itemize}
+\end{uncoverenv}
+
 \end{frame}
 
 % Fixing macro problem with brackets
 \begin{frame}[fragile]
     \frametitle{\declarerule Avoid macro functions}
-    \textbf{Macro Solution:} Wrap arguments in brackets:
-\begin{lstlisting}
-#define CIRCLE_AREA(RADIUS) 3.14 * (RADIUS) * (RADIUS)
+\begin{lstlisting}[title=\textbf{Macro Solution:} Wrap arguments in brackets]
+#define CIRCLE_AREA(RAD) (3.14 * (R) * (R))
 \end{lstlisting}
 \begin{itemize}
-    \item This is just a bandaid
-\end{itemize}
-    \textbf{Better solution:} inline functions:
-\begin{lstlisting}
-inline double circle_area(double radius) {
-    return 3.14 * radius * radius;
-}
-\end{lstlisting}
-\begin{itemize}
-    \item Type safe
-    \item Checked by compiler
-    \item Scope
+    \item<2->Macro functions do not work as functions
+    \item<2->This solution is just a bandaid!
+    \item<3->But wait... There's more!
 \end{itemize}
 \end{frame}
 
 % Demonstrate problem with multiline macros
 \begin{frame}[fragile]
     \frametitle{\declarerule Avoid macro functions}
-\begin{lstlisting}
-#define CIRCLE_AREA(RADIUS) 3.14 * (RADIUS) * (RADIUS)
+    \framesubtitle{Multiline Macros}
+    
+\begin{uncoverenv}<1->
+\begin{lstlisting}[title=A multiline macro that swaps the values of two variables]
+#define SWAP(x, y) \
+    tmp = x; \
+    x = y; \
+    y = tmp
 \end{lstlisting}
+
+\begin{lstlisting}[title=You write]
+if (z == 0)
+    SWAP( x, y);
+\end{lstlisting}
+\end{uncoverenv}
+
+\begin{uncoverenv}<2->
+\begin{lstlisting}[title=The compiler sees]
+if (z == 0)
+    tmp = x;
+x = y;
+y = tmp;
+\end{lstlisting}
+\end{uncoverenv}
+\end{frame}
+
+% Fix multiline with do while
+\begin{frame}[fragile]
+    \frametitle{\declarerule Avoid macro functions}
+    \framesubtitle{Multiline Macros}
+    
+    \begin{lstlisting}[title=\textbf{Bandaid solution:} wrap in do-while]
+#define SWAP(x, y) \
+    do { \
+        tmp = x; \
+        x = y; \
+        y = tmp; \
+    } while (0)
+\end{lstlisting}
+\begin{itemize}
+    \item Surely we can get by with bandaids!
+\end{itemize}
+\end{frame}
+
+% Fix multiline with do while
+\begin{frame}[fragile]
+    \frametitle{\declarerule Avoid macro functions}
+    \framesubtitle{Undefined Behaviour}
+    
+\begin{uncoverenv}<1->
+\begin{lstlisting}[title=A simple abs macro]
+#define ABS(x) (((x) < 0) ? -(x) : (x))
+\end{lstlisting}
+
+\begin{lstlisting}[title=You write]
+m = ABS(++n); 
+\end{lstlisting}
+\end{uncoverenv}
+
+\begin{uncoverenv}<2->
+\begin{lstlisting}[title=The compiler sees]
+m = (((++n) < 0) ? -(++n) : (++n))
+/* undefined behaviour */
+\end{lstlisting}
+    \begin{itemize}
+        \item Cannot modify object more than once in a expression.
+        \item We've run out of bandaids!
+    \end{itemize}
+\end{uncoverenv}
+\end{frame}
+
+% Show solution to macro woes
+\begin{frame}[fragile]
+    \frametitle{\declarerule Avoid macro functions}
+    \begin{lstlisting}[title=\textbf{Better solution:} inline functions]
+    inline double circle_area(double radius) {
+        return 3.14 * radius * radius;
+    }
+    \end{lstlisting}
+    \begin{itemize}
+        \item Type safe
+        \item Checked by compiler
+        \item Scoped
+    \end{itemize}
 \end{frame}
 
 \end{document}
