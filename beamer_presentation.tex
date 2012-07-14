@@ -7,28 +7,40 @@
 \usepackage{color}
 \usepackage{caption}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                  Fonts                                  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 \usepackage{inconsolata} % for code
 \usepackage{lmodern}
 \renewcommand*\familydefault{\sfdefault} 
+\usepackage[T1]{fontenc}
 %\usepackage[T1]{fontenc}
 %\usepackage[default]{gfsneohellenic}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                         Beamer Theme and colors                         %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
  
 \definecolor{gray}{HTML}{3A3A3A}
-\definecolor{codebg}{HTML}{2C2C2C}
-\definecolor{codefg}{HTML}{D0D0D0}
-\definecolor{codekeyword}{HTML}{87AFEF}
-\definecolor{codecomment}{HTML}{808080}
+\definecolor{codebg}{HTML}{2C2C2C} % dark gray
+\definecolor{codefg}{HTML}{D0D0D0} % light gray
+\definecolor{codekeyword}{HTML}{87AFEF} % light blue
+\definecolor{codecomment}{HTML}{808080} % gray
+\definecolor{codestring}{HTML}{DFDF87} % for strings, light yellow
 \definecolor{pastelred}{HTML}{DF8787}
-
-\definecolor{codestring}{HTML}{DFDF87} % for strings
+\definecolor{themeblue}{HTML}{173F9F}
 
 % tweak beamer theme
-%\setbeamercolor{background canvas}{bg=gray}
 \setbeamercolor{framesubtitle}{fg=white}
 \setbeamercolor{author}{fg=white}
 \setbeamercolor{date}{fg=white}
  
-% tweak listings for code ==================
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                             Tweak Listings                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % caption stuff
 \DeclareCaptionFormat{listing}{\parbox{\textwidth}{#1#2#3}}
@@ -62,10 +74,28 @@
 }
 % ==========================================
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                     Custom Macros for Presentation                      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% define a counter for rules
+\newcounter{rulecount}
+\newcommand{\declarerule}{\textbf{\color{themeblue}{Rule \therulecount:}} }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                               Author info                               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 \title{Forgetting the C in C++}
 \author{Alexander Kondratskiy}
 \date{\today}
 % \institute[2008]{ECON 101}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                            Main Presentation                            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 \begin{document}
 
@@ -214,10 +244,6 @@
     \end{itemize}
 \end{frame}
 
-% define a counter for rules
-\newcounter{rulecount}
-\newcommand{\declarerule}{\textbf{\color{blue}{Rule \therulecount:}} }
-
 \section{Preprocessor}
 \frame{\sectionpage}
 
@@ -273,8 +299,8 @@ double total_area = 2 * 3.14 * a + b * a + b;
 % Fixing macro problem with brackets
 \begin{frame}[fragile]
     \frametitle{\declarerule Avoid macro functions}
-\begin{lstlisting}[title=\textbf{Macro Solution:} Wrap arguments in brackets]
-#define CIRCLE_AREA(RAD) (3.14 * (R) * (R))
+\begin{lstlisting}[title=\textbf{Macro Solution:} Wrap everything in brackets]
+#define CIRCLE_AREA(R) (3.14 * (R) * (R))
 \end{lstlisting}
 \begin{itemize}
     \item<2->Macro functions do not work as functions
@@ -351,7 +377,7 @@ m = (((++n) < 0) ? -(++n) : (++n))
 /* undefined behaviour */
 \end{lstlisting}
     \begin{itemize}
-        \item Cannot modify object more than once in a expression.
+        \item Cannot modify object more than once in an expression.
         \item We've run out of bandaids!
     \end{itemize}
 \end{uncoverenv}
@@ -360,16 +386,69 @@ m = (((++n) < 0) ? -(++n) : (++n))
 % Show solution to macro woes
 \begin{frame}[fragile]
     \frametitle{\declarerule Avoid macro functions}
-    \begin{lstlisting}[title=\textbf{Better solution:} inline functions]
-    inline double circle_area(double radius) {
-        return 3.14 * radius * radius;
-    }
-    \end{lstlisting}
+    \framesubtitle{Use inline functions}
+\begin{lstlisting}[title=\textbf{Better solution:} inline functions]
+inline double circle_area(double radius) {
+    return 3.14 * radius * radius;
+}
+\end{lstlisting}
+
+\begin{lstlisting}
+inline void swap(int& x, int& y) {
+    int temp = x;
+    x = y;
+    y = temp;
+}
+\end{lstlisting}
+
+\begin{lstlisting}
+inline double abs(double radius) {
+    return (x < 0) ? -x : x);
+}
+\end{lstlisting}
+
+\end{frame}
+
+% Advantages of inline functions over macros
+\begin{frame}[fragile]
+    \frametitle{\declarerule Avoid macro functions}
+    \framesubtitle{Use inline functions}
     \begin{itemize}
-        \item Type safe
-        \item Checked by compiler
-        \item Scoped
+        \item<1->Use inline functions!
+            \begin{itemize}
+                \item Type safe
+                \item Efficient- inlined by compiler
+                \item Checked by compiler
+                \item Scoped
+                \item Can be used in C too
+            \end{itemize}
+        \item<2->Can we make them type-generic, like macros?
     \end{itemize}
+\end{frame}
+
+% Template inline functions
+\begin{frame}[fragile]
+    \frametitle{\declarerule Avoid macro functions}
+    \framesubtitle{C++ to the rescue: templates!}
+\begin{lstlisting}
+template <typename T>
+inline void swap(T& x, T& y) {
+    T temp = x;
+    x = y;
+    y = temp;
+}
+\end{lstlisting}
+
+\begin{lstlisting}
+template <typename T>
+inline T abs(T radius) {
+    return (x < 0) ? -x : x);
+}
+\end{lstlisting}
+\begin{itemize}
+    \item All the advantages of functions
+    \item Plus type-generic
+\end{itemize}
 \end{frame}
 
 \end{document}
