@@ -1,6 +1,7 @@
 \documentclass{beamer}
 
-\usetheme[secheader]{Boadilla}
+%\usetheme[secheader]{Boadilla}
+\usetheme{Boadilla}
 \usecolortheme{beetle}
 \usepackage[latin1]{inputenc}
 \usepackage{listings} % for code syntax highlighting
@@ -16,8 +17,6 @@
 \usepackage{lmodern}
 \renewcommand*\familydefault{\sfdefault} 
 \usepackage[T1]{fontenc}
-%\usepackage[T1]{fontenc}
-%\usepackage[default]{gfsneohellenic}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                         Beamer Theme and colors                         %
@@ -27,14 +26,17 @@
 \definecolor{gray}{HTML}{3A3A3A}
 \definecolor{codebg}{HTML}{2C2C2C} % dark gray
 \definecolor{codefg}{HTML}{D0D0D0} % light gray
-\definecolor{codekeyword}{HTML}{87AFEF} % light blue
+\definecolor{themeblue}{HTML}{789FEF} % light blue
 \definecolor{codecomment}{HTML}{808080} % gray
 \definecolor{codestring}{HTML}{DFDF87} % for strings, light yellow
-\definecolor{pastelred}{HTML}{DF8787}
-\definecolor{themeblue}{HTML}{173F9F}
+\definecolor{themedarkblue}{HTML}{1d2561}
+\definecolor{themeyellow}{HTML}{DFDF67}
 
 % tweak beamer theme
 \setbeamercolor{framesubtitle}{fg=white}
+\setbeamercolor{frametitle}{bg=codebg}
+\setbeamercolor{title}{bg=codebg}
+\setbeamercolor{palette primary}{bg=themedarkblue}
 \setbeamercolor{author}{fg=white}
 \setbeamercolor{date}{fg=white}
  
@@ -49,11 +51,6 @@
 \lstset{ %
   language=C++,                % the language of the code
   basicstyle=\small\ttfamily\color{codefg},           % the size of the fonts that are used for the code
-  %numbers=left,                   % where to put the line-numbers
-  %numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
-  %stepnumber=2,                   % the step between two line-numbers. If it's 1, each line 
-                                  %% will be numbered
-  %numbersep=5pt,                  % how far the line-numbers are from the code
   backgroundcolor=\color{codebg},      % choose the background color. You must add \usepackage{color}
   showspaces=false,               % show spaces adding particular underscores
   showstringspaces=false,         % underline spaces within strings
@@ -66,7 +63,7 @@
   breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
   title=\lstname,                   % show the filename of files included with \lstinputlisting;
                                   % also try caption instead of title
-  keywordstyle=\color{codekeyword}\bfseries,
+  keywordstyle=\color{themeblue}\bfseries,
   stringstyle=\color{codestring},
   commentstyle=\color{codecomment},
   escapeinside={\%*}{*)},            % if you want to add LaTeX within your code
@@ -81,6 +78,8 @@
 % define a counter for rules
 \newcounter{rulecount}
 \newcommand{\declarerule}{\textbf{\color{themeblue}{Rule \therulecount:}} }
+
+\newcommand{\declarelesson}{\textbf{\color{themeyellow}{Lesson:}} }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                               Author info                               %
@@ -262,13 +261,27 @@
 
 \stepcounter{rulecount}
 \begin{frame}[fragile]
-    \frametitle{\declarerule Avoid \#define constants}
+    \frametitle{\declarerule Prefer \texttt{const} variables over \texttt{\#define}}
+    \framesubtitle{Declaring constants}
 \begin{lstlisting}
 #define DAYSINWEEK 7
+const unsigned int days_in_a_week = 7;
 \end{lstlisting}
-% TODO: finish
+    \begin{itemize}
+        \item Typesafe
+            \begin{itemize}
+                \item Unambiguous function overload usage
+            \end{itemize}
+        \item Debugging symbol exists
+        \item Scoped
+        \item Const variables can be any C++ type, not just numbers
+            \begin{itemize}
+                \item Can be pointed to
+            \end{itemize}
+    \end{itemize}
 \end{frame}
 
+% Beackerting problem
 \stepcounter{rulecount}
 \begin{frame}[fragile]
     \frametitle{\declarerule Avoid macro functions}
@@ -449,6 +462,11 @@ inline T abs(T radius) {
     \item All the advantages of functions
     \item Plus type-generic
 \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\declarelesson Classes}
+    
 \end{frame}
 
 \end{document}
