@@ -1,12 +1,15 @@
-\documentclass{beamer}
+\documentclass[table]{beamer}
 
 %\usetheme[secheader]{Boadilla}
 \usetheme{Boadilla}
 \usecolortheme{beetle}
 \usepackage[latin1]{inputenc}
 \usepackage{listings} % for code syntax highlighting
-\usepackage{color}
 \usepackage{caption}
+
+\usepackage{color}
+\usepackage{booktabs} % better tables
+\usepackage{colortbl} % for coloring tables
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                  Fonts                                  %
@@ -23,7 +26,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
  
-\definecolor{gray}{HTML}{3A3A3A}
+\definecolor{themegray}{HTML}{999999}
 \definecolor{codebg}{HTML}{2C2C2C} % dark gray
 \definecolor{codefg}{HTML}{D0D0D0} % light gray
 \definecolor{themeblue}{HTML}{789FEF} % light blue
@@ -39,6 +42,14 @@
 \setbeamercolor{palette primary}{bg=themedarkblue}
 \setbeamercolor{author}{fg=white}
 \setbeamercolor{date}{fg=white}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                              Tweak Tables                               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\setlength{\aboverulesep}{0pt}
+\setlength{\belowrulesep}{0pt}
+\setlength{\extrarowheight}{.75ex}
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                             Tweak Listings                              %
@@ -118,7 +129,6 @@
     \frametitle{Motivation}
     \begin{itemize}
         \item<1->C++ has evolved
-            % TODO: find word 
         \item<2->\alert{Safety}/Robustness
             \begin{itemize}
                 \item Resource management (including memory)
@@ -464,9 +474,50 @@ inline T abs(T radius) {
 \end{itemize}
 \end{frame}
 
+\begin{frame}[fragile]
+    \frametitle{\declarelesson Scope}
+    \begin{lstlisting}[basicstyle=\scriptsize\ttfamily\color{codefg}]
+int globalVar;
+
+namespace SomeNamespace {
+    int namespaceVar;
+
+    class SomeClass {
+        static int classVar;
+
+        int instanceVar; // aka member variable
+
+        void someMethod() {
+            int methodVar;
+
+            if (someCondition) {
+                int localVar;
+            }
+        }
+    }
+}
+    \end{lstlisting}
+\end{frame}
+
+% TODO: 3 ways in C to do error handling
 \begin{frame}
-    \frametitle{\declarelesson Classes}
-    
+    \frametitle{\declarelesson Scope}
+
+    \rowcolors{2}{codecomment}{themegray}
+    \begin{table}[tl]
+        \begin{tabular}{lll}
+            \rowcolor{codebg}
+            \color{white} Variable & \color{white} Lifetime & \color{white} Name Scope\\
+                          global & global & global \\
+                       namespace & global & namespace \\
+                        class & global & class \\
+                     instance & instance & class \\
+                     method / function & function & function \\
+                     block & block & block \\
+        \end{tabular}
+        \caption{This table shows some data}
+        %\label{tab:myfirsttable}
+    \end{table}
 \end{frame}
 
 \end{document}
