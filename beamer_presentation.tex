@@ -291,7 +291,7 @@ const unsigned int days_in_a_week = 7;
     \end{itemize}
 \end{frame}
 
-% Beackerting problem
+% Bracketing problem
 \stepcounter{rulecount}
 \begin{frame}[fragile]
     \frametitle{\declarerule Avoid macro functions}
@@ -499,7 +499,6 @@ namespace SomeNamespace {
     \end{lstlisting}
 \end{frame}
 
-% TODO: 3 ways in C to do error handling
 \begin{frame}
     \frametitle{\declarelesson Scope}
 
@@ -516,6 +515,60 @@ namespace SomeNamespace {
                      block & block & block \\
         \end{tabular}
     \end{table}
+    \begin{itemize}
+        \item Concepts of \emph{lifetime} and \emph{name lookup} are important
+    \end{itemize}
 \end{frame}
+
+
+\stepcounter{rulecount}
+\begin{frame}[fragile]
+    \frametitle{\declarerule Declare variables locally}
+    \begin{lstlisting}[title=In ANSI C variables must be declared at the beginning of scope]
+int someFunc() 
+    struct foo;
+    struct bar;
+    /* ... another 15 declarations */
+
+    /* 
+     * use foo.
+     * 40 lines of code
+     */
+
+    /* 
+     * start using bar
+     */
+ }
+    \end{lstlisting}
+\end{frame}
+
+\stepcounter{rulecount}
+\begin{frame}[fragile]
+    \frametitle{\declarerule Declare variables locally}
+    \begin{lstlisting}[title=In C++ variables can be declared in the middle of scope where they are used]
+int someFunc() {
+    struct foo;
+    // use foo
+
+    struct bar;
+    // use bar
+
+    // ...
+ }
+    \end{lstlisting}
+    \begin{itemize}
+        \item Declares intent to reader and compiler
+            \begin{itemize}
+                \item \alert{Readability}
+                \item \alert{Efficiency} (compiler optimization)
+            \end{itemize}
+        \item Reduces variable scope
+            \begin{itemize}
+                \item less potential for error
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% TODO: 3 ways in C to do error handling
 
 \end{document}
