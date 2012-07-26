@@ -569,7 +569,7 @@ int someFunc() {
     \end{itemize}
 \end{frame}
 
-% New and Delete
+% Malloc and Free
 \stepcounter{rulecount}
 \begin{frame}[fragile]
     \frametitle{\declarerule Use \texttt{new} and \texttt{delete} }
@@ -594,6 +594,7 @@ free(foo);
     \end{lstlisting}
 \end{frame}
 
+% New and Delete
 \begin{frame}[fragile]
     \frametitle{\declarerule Use \texttt{new} and \texttt{delete} }
     \framesubtitle{Never \texttt{malloc} and \texttt{free} }
@@ -607,6 +608,7 @@ free(foo);
                 \item Size is known by compiler
                 \item Correct type is returned (no casting required)
                 \item Memory initialized by class constructor
+                \item Works for all types
             \end{itemize}
     \end{itemize}
     \begin{lstlisting}[title=Dynamically allocating an object in C++]
@@ -616,11 +618,26 @@ class MyClass {
 
 // calls default constructor
 MyClass* foo = new MyClass;
-
 delete foo;
     \end{lstlisting}
 \end{frame}
 
+% new[] and delete[]
+\begin{frame}[fragile]
+    \frametitle{\declarerule Use \texttt{new} and \texttt{delete} }
+    \framesubtitle{Arrays}
+    \begin{itemize}
+        \item How about allocating arrays in C++?
+        \item Use \texttt{new[]} and \texttt{delete[]} for arrays 
+            \begin{itemize}
+                \item Size need not be a compile-time constant
+            \end{itemize}
+    \end{itemize}
+    \begin{lstlisting}[title=Dynamically allocating an array of objects in C++]
+MyClass fooArray[] = new MyClass[someSize];
+delete[] fooArray;
+    \end{lstlisting}
+\end{frame}
 % TODO: 3 ways in C to do error handling
 
 \end{document}
