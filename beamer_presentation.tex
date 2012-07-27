@@ -569,6 +569,63 @@ int someFunc() {
     \end{itemize}
 \end{frame}
 
+% TODO: Start lesson here on objects, and intersperse rules
+
+% Class intro
+\begin{frame}[fragile]
+    \frametitle{\declarelesson Classes }
+    \framesubtitle{Structures in C}
+    \begin{lstlisting}[title=Data in C is usually represented with \texttt{struct}s]
+struct Mansion {
+    int floors;
+    int rooms;
+    struct FloorPlan* floorPlans;
+};
+    \end{lstlisting}
+    \begin{itemize}
+        \item Useful for describing aggregate concepts
+        \item All data accessible by any function
+    \end{itemize}
+\end{frame}
+
+% Overview of new featres of Classes
+\begin{frame}
+    \frametitle{\declarelesson Classes }
+    \framesubtitle{C++ additions}
+    \begin{itemize}
+        \item C++ introduces classes, and ...
+            \begin{itemize}
+                \item Private and protected members
+                \item Constructors
+                \item Destructors
+                \item Methods
+                \item Operators
+                \item Inheritance
+                \item Virtual methods
+                \item Virtual inheritance
+            \end{itemize}
+        \item In C++ structs can also have all of the above
+            \begin{itemize}
+                \item Classes: \emph{members private} by default
+                \item Structs: \emph{members public} by default
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% C++ private members
+\begin{frame}[fragile]
+    \frametitle{\declarelesson Classes }
+    \framesubtitle{Private members}
+    \begin{itemize}
+        \item C++ introduces private members
+            \begin{itemize}
+                \item members only accessible inside its own methods
+                \item All data accessible by any function
+            \end{itemize}
+        \item All data accessible by any function
+    \end{itemize}
+\end{frame}
+
 % Malloc and Free
 \stepcounter{rulecount}
 \begin{frame}[fragile]
@@ -581,16 +638,16 @@ int someFunc() {
             \end{itemize}
     \end{itemize}
     \begin{lstlisting}[title=Dynamically allocating a struct in C]
-struct MyStruct {
+struct Mansion {
     // definition
 };
 
-struct MyStruct* foo =
-    (struct MyStruct*)malloc(sizeof(struct MyStruct));
+struct Mansion* myMansion =
+    (struct Mansion*)malloc(sizeof(struct Mansion));
 
-foo->member = 42; // initialize inner members
+myMansion->floors = 3; // initialize inner members
 
-free(foo);
+free(myMansion);
     \end{lstlisting}
 \end{frame}
 
@@ -612,13 +669,13 @@ free(foo);
             \end{itemize}
     \end{itemize}
     \begin{lstlisting}[title=Dynamically allocating an object in C++]
-class MyClass {
+class Mansion {
     // definition
 };
 
 // calls default constructor
-MyClass* foo = new MyClass;
-delete foo;
+Mansion* myMansion = new Mansion;
+delete myMansion;
     \end{lstlisting}
 \end{frame}
 
@@ -634,8 +691,8 @@ delete foo;
             \end{itemize}
     \end{itemize}
     \begin{lstlisting}[title=Dynamically allocating an array of objects in C++]
-MyClass fooArray[] = new MyClass[someSize];
-delete[] fooArray;
+Mansion richArea[] = new Mansion[largeNumber];
+delete[] richArea;
     \end{lstlisting}
 \end{frame}
 % TODO: 3 ways in C to do error handling
