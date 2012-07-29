@@ -12,7 +12,7 @@
 \usepackage{colortbl} % for coloring tables
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                  Fonts                                  %
+%{{{                               Fonts                                  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -20,9 +20,10 @@
 \usepackage{lmodern}
 \renewcommand*\familydefault{\sfdefault} 
 \usepackage[T1]{fontenc}
+%}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                         Beamer Theme and colors                         %
+%{{{                      Beamer Theme and colors                         %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
  
@@ -42,17 +43,19 @@
 \setbeamercolor{palette primary}{bg=themedarkblue}
 \setbeamercolor{author}{fg=white}
 \setbeamercolor{date}{fg=white}
+%}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                              Tweak Tables                               %
+%{{{                           Tweak Tables                               %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \setlength{\aboverulesep}{0pt}
 \setlength{\belowrulesep}{0pt}
 \setlength{\extrarowheight}{.75ex}
+%}}}
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                             Tweak Listings                              %
+%{{{                          Tweak Listings                              %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % caption stuff
@@ -80,10 +83,10 @@
   escapeinside={\%*}{*)},            % if you want to add LaTeX within your code
   morekeywords={*,...}               % if you want to add more keywords to the set
 }
-% ==========================================
+% ========================================== }}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                     Custom Macros for Presentation                      %
+%{{{                  Custom Macros for Presentation                      %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % define a counter for rules
@@ -91,9 +94,10 @@
 \newcommand{\declarerule}{\textbf{\color{themeblue}{Rule \therulecount:}} }
 
 \newcommand{\declarelesson}{\textbf{\color{themeyellow}{Lesson:}} }
+%}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                               Author info                               %
+%{{{                            Author info                               %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -102,8 +106,10 @@
 \date{\today}
 % \institute[2008]{ECON 101}
 
+%}}}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                            Main Presentation                            %
+%{{{                         Main Presentation                            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -124,6 +130,16 @@
     \end{itemize}
 }
 
+% Misinformation
+\frame {
+    \frametitle{Motivation}
+    \begin{itemize}
+        \item Wealth of misinformation on the internet about C++
+        \item The name C++ gives the wrong (and lasting) first impression
+        \item Most code examples could have come from 1985
+    \end{itemize}
+}
+
 % Buzzwords
 \frame {
     \frametitle{Motivation}
@@ -131,9 +147,9 @@
         \item<1->C++ has evolved
         \item<2->\alert{Safety}/Robustness
             \begin{itemize}
+                \item Compiler checks
                 \item Resource management (including memory)
                 \item Type safety
-                \item Compiler checks
             \end{itemize}
         \item<2->\alert{Readability}/Maintainability
             \begin{exampleblock}{}
@@ -182,6 +198,11 @@
         \item<2->Learn new techniques/features along the way
     \end{itemize}
 \end{frame}
+%}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                           Prerequisites                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Prerequisites}
 \frame{\sectionpage}
@@ -252,6 +273,12 @@
         \item Template instantiation happens in the compiler
     \end{itemize}
 \end{frame}
+%}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                           Preprocessor                               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 \section{Preprocessor}
 \frame{\sectionpage}
@@ -347,7 +374,7 @@ double total_area = 2 * 3.14 * a + b * a + b;
 
 \begin{lstlisting}[title=You write]
 if (z == 0)
-    SWAP( x, y);
+    SWAP(x, y);
 \end{lstlisting}
 \end{uncoverenv}
 
@@ -396,7 +423,7 @@ m = ABS(++n);
 
 \begin{uncoverenv}<2->
 \begin{lstlisting}[title=The compiler sees]
-m = (((++n) < 0) ? -(++n) : (++n))
+m = (((++n) < 0) ? -(++n) : (++n));
 /* undefined behaviour */
 \end{lstlisting}
     \begin{itemize}
@@ -473,6 +500,11 @@ inline T abs(T radius) {
     \item Plus type-generic
 \end{itemize}
 \end{frame}
+%}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                               Scope                                  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}[fragile]
     \frametitle{\declarelesson Scope}
@@ -506,7 +538,7 @@ namespace SomeNamespace {
     \begin{table}[tl]
         \begin{tabular}{p{3cm}p{2.5cm}p{2.5cm}}
             \rowcolor{codebg}
-            \color{white} Variable & \color{white} Lifetime & \color{white} Name Scope\\
+            \color{white} Variable & \color{white} Lifetime & \color{white} Lexical Scope\\
                           global & global & global \\
                        namespace & global & namespace \\
                         class & global & class \\
@@ -516,9 +548,14 @@ namespace SomeNamespace {
         \end{tabular}
     \end{table}
     \begin{itemize}
-        \item Concepts of \emph{lifetime} and \emph{name lookup} are important
+        \item Concepts of \emph{lifetime} and \emph{lexical scope} are important
     \end{itemize}
 \end{frame}
+%}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                    Local Variable Declaration                        %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % C variable declaration
 \stepcounter{rulecount}
@@ -568,8 +605,13 @@ int someFunc() {
             \end{itemize}
     \end{itemize}
 \end{frame}
+%}}}
 
 % TODO: Start lesson here on objects, and intersperse rules
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                              Classes                                 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 % Class intro
 \begin{frame}[fragile]
@@ -578,7 +620,7 @@ int someFunc() {
     \begin{lstlisting}[title=Data in C is usually represented with \texttt{struct}s]
 struct Mansion {
     int floors;
-    int rooms;
+    int roomsPerFloor;
     struct FloorPlan* floorPlans;
 };
     \end{lstlisting}
@@ -588,7 +630,7 @@ struct Mansion {
     \end{itemize}
 \end{frame}
 
-% Overview of new featres of Classes
+% Overview of new features Classes
 \begin{frame}
     \frametitle{\declarelesson Classes }
     \framesubtitle{C++ additions}
@@ -604,10 +646,11 @@ struct Mansion {
                 \item Virtual methods
                 \item Virtual inheritance
             \end{itemize}
-        \item In C++ structs can also have all of the above
+        \item Structs can also have all of the above
+        \item The \emph{only} difference between structs and classes is
             \begin{itemize}
-                \item Classes: \emph{members private} by default
-                \item Structs: \emph{members public} by default
+                \item Classes: \emph{access private} by default
+                \item Structs: \emph{access public} by default
             \end{itemize}
     \end{itemize}
 \end{frame}
@@ -618,11 +661,54 @@ struct Mansion {
     \framesubtitle{Private members}
     \begin{itemize}
         \item C++ introduces private members
-            \begin{itemize}
-                \item members only accessible inside its own methods
-                \item All data accessible by any function
-            \end{itemize}
-        \item All data accessible by any function
+    \end{itemize}
+    \begin{lstlisting}[title=Functions cannot access members]
+class Mansion { // members private by default
+    int floors;
+    int roomsPerFloor;
+};
+
+int getTotalRooms(Mansion* mansion) {
+    // error!
+    return mansion->floors * mansion->roomsPerFloor;
+}
+    \end{lstlisting}
+\end{frame}
+
+% member access errors
+\begin{frame}[fragile]
+    \frametitle{\declarelesson Classes }
+    \framesubtitle{Private members}
+    \begin{lstlisting}[title=Compilation errors,basicstyle=\scriptsize\ttfamily\color{codefg},language=bash]
+mansion.cpp: In function `int getTotalRooms(Mansion*)':
+mansion.cpp:11:9: error: `int Mansion::floors' is private
+mansion.cpp:16:21: error: within this context
+mansion.cpp:12:9: error: `int Mansion::roomsPerFloor' is private
+mansion.cpp:16:39: error: within this context
+    \end{lstlisting}
+\end{frame}
+
+
+% C++ access
+\begin{frame}[fragile]
+    \frametitle{\declarelesson Classes }
+    \framesubtitle{Private members}
+    \begin{lstlisting}[title=Keywords for defining member access]
+class Mansion {
+private: // default access in classes
+    int floors;
+    int roomsPerFloor;
+
+public: // default access in structs
+    Address address;
+
+protected: // private, accessible by derived classes
+    Plumbing pipes;
+};
+    \end{lstlisting}
+    \begin{itemize}
+        \item How can we access private members?
+        \item Private members only accessible inside class methods
     \end{itemize}
 \end{frame}
 
@@ -698,3 +784,7 @@ delete[] richArea;
 % TODO: 3 ways in C to do error handling
 
 \end{document}
+%}}}
+
+% Modeline for vim settings:
+% vim60:fdm=marker:
