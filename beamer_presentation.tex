@@ -33,8 +33,10 @@
 \definecolor{themeblue}{HTML}{789FEF} % light blue
 \definecolor{codecomment}{HTML}{808080} % gray
 \definecolor{codestring}{HTML}{DFDF87} % for strings, light yellow
-\definecolor{themedarkblue}{HTML}{1d2561}
+\definecolor{themedarkblue}{HTML}{1D2561}
+\definecolor{themegreen}{HTML}{6ABF29}
 \definecolor{themeyellow}{HTML}{DFDF67}
+\definecolor{themeorange}{HTML}{DF8F27}
 
 % tweak beamer theme
 \setbeamercolor{framesubtitle}{fg=white}
@@ -93,7 +95,10 @@
 \newcounter{rulecount}
 \newcommand{\declarerule}{\textbf{\color{themeblue}{Rule \therulecount:}} }
 
-\newcommand{\declarelesson}{\textbf{\color{themeyellow}{Lesson:}} }
+\newcommand{\declarelesson}{\textbf{\color{themegreen}{Lesson:}} }
+
+% behind the scenes title
+\newcommand{\declarebts}{\textbf{\color{themeorange}{Behind the Scenes:}} }
 %}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -612,7 +617,6 @@ int someFunc() {
 %{{{                              Classes                                 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
 % Class intro
 \begin{frame}[fragile]
     \frametitle{\declarelesson Classes }
@@ -635,7 +639,7 @@ struct Mansion {
     \frametitle{\declarelesson Classes }
     \framesubtitle{C++ additions}
     \begin{itemize}
-        \item C++ introduces classes, and ...
+        \item C++ introduces classes, which can have ...
             \begin{itemize}
                 \item Private and protected members
                 \item Constructors
@@ -654,6 +658,11 @@ struct Mansion {
             \end{itemize}
     \end{itemize}
 \end{frame}
+%}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                           Member access                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % C++ private members
 \begin{frame}[fragile]
@@ -711,6 +720,126 @@ protected: // private, accessible by derived classes
         \item Private members only accessible inside class methods
     \end{itemize}
 \end{frame}
+%}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                              Methods                                 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Class methods
+\begin{frame}[fragile]
+    \frametitle{\declarelesson Classes }
+    \framesubtitle{Methods}
+    \begin{itemize}
+        \item Classes can have methods a.k.a. member functions
+        \item Can access all members of an object (class instance)
+        \item Via implicit \texttt{this} pointer that refers to the object
+        \item Can be private, public, and protected 
+    \end{itemize}
+    \begin{lstlisting}[title=Writing a method]
+class Mansion { // members private by default
+    int floors;
+    int roomsPerFloor;
+
+public:
+    int getTotalRooms() {
+        return this->floors * this->roomsPerFloor;
+    }
+};
+    \end{lstlisting}
+\end{frame}
+
+% Method usage
+\begin{frame}[fragile]
+    \frametitle{\declarelesson Classes }
+    \framesubtitle{Methods}
+    \begin{lstlisting}[title=Using a method]
+class Mansion {
+public:
+    int getTotalRooms() {
+        return this->floors * this->roomsPerFloor;
+    }
+};
+
+Mansion myMansion;
+Mansion* mansionPointer;
+int total = myMansion.getTotalRooms();
+total = mansionPointer->getTotalRooms();
+    \end{lstlisting}
+    \begin{itemize}
+        \item By combining private members and methods, we encapsulate and
+            abstract implementation details.
+    \end{itemize}
+\end{frame}
+
+% Methods and "this" C idiom
+\begin{frame}[fragile]
+    \frametitle{\declarebts Methods }
+    \begin{lstlisting}[title=\texttt{this} pointer idiom in C]
+int getTotalRooms(Mansion* this) {
+    return this->floors * this->roomsPerFloor;
+}
+    \end{lstlisting}
+    \begin{itemize}
+        \item Gives insight into how methods are implemented
+    \end{itemize}
+    \begin{lstlisting}[title=Calling an object's method]
+int total = mansionPointer->getTotalRooms();
+    \end{lstlisting}
+    \begin{lstlisting}[title=Behind the scenes]
+int total = getTotalRooms(mansionPointer);
+    \end{lstlisting}
+    \begin{itemize}
+        \item Methods stored just as functions in final executable (once)
+        \item Separate from object's members
+        \item Methods work as functions acting on objects
+    \end{itemize}
+\end{frame}
+
+%TODO: diagram of methods in memory?
+%}}}
+
+% TODO: Constructors
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                           Constructors                               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Introduction to constructors
+\begin{frame}[fragile]
+    \frametitle{\declarelesson Classes }
+    \framesubtitle{Constructors}
+    \begin{itemize}
+        \item Members have to be initialized on creation (esp. if private)
+        \item C++ 
+    \end{itemize}
+    \begin{lstlisting}[title=\texttt{this} pointer idiom in C]
+int getTotalRooms(Mansion* this) {
+    return this->floors * this->roomsPerFloor;
+}
+    \end{lstlisting}
+    \begin{itemize}
+        \item Gives insight into how methods are implemented
+    \end{itemize}
+    \begin{lstlisting}[title=Calling an object's method]
+int total = mansionPointer->getTotalRooms();
+    \end{lstlisting}
+    \begin{lstlisting}[title=Behind the scenes]
+int total = getTotalRooms(mansionPointer);
+    \end{lstlisting}
+    \begin{itemize}
+        \item Methods stored just as functions in final executable (once)
+        \item Separate from object's members
+        \item Methods work as functions acting on objects
+    \end{itemize}
+\end{frame}
+
+%}}}
+
+% TODO: Destructors
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                          New and delete                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Malloc and Free
 \stepcounter{rulecount}
@@ -781,10 +910,13 @@ Mansion richArea[] = new Mansion[largeNumber];
 delete[] richArea;
     \end{lstlisting}
 \end{frame}
+%}}}
+
+% TODO: RAII epic sauce
+
 % TODO: 3 ways in C to do error handling
 
 \end{document}
-%}}}
 
 % Modeline for vim settings:
 % vim60:fdm=marker:
