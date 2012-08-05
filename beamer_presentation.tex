@@ -213,7 +213,7 @@
 \frame{\sectionpage}
 
 \begin{frame}
-    \frametitle{History of C++}
+    \frametitle{\declarelesson History of C++}
     \begin{columns}[t]
         \column{7cm}
         \begin{itemize}
@@ -234,7 +234,7 @@
 
 % C Compilation
 \begin{frame}
-    \frametitle{C Compilation model}
+    \frametitle{\declarelesson C Compilation model}
     \framesubtitle{A single source file}
     \begin{columns}[t]
         \column{4cm}
@@ -251,7 +251,7 @@
 
 % Linker
 \begin{frame}
-    \frametitle{C Compilation model}
+    \frametitle{\declarelesson C Compilation model}
     \framesubtitle{Linking}
     \begin{columns}[t]
         \column{4cm}
@@ -266,13 +266,13 @@
 
 % Linker + Compiler large diagram
 \begin{frame}
-    \frametitle{C Compilation model}
+    \frametitle{\declarelesson C Compilation model}
     \framesubtitle{A typical project}
     \includegraphics[height=12cm,angle=-90]{diagrams/c_compilation_model_2.pdf}
 \end{frame}
 
 \begin{frame}
-    \frametitle{\alert{C++} Compilation model}
+    \frametitle{\declarelesson C++ Compilation model}
     \begin{itemize}
         \item Same as C compilation model
         \item Template instantiation happens in the compiler
@@ -281,9 +281,117 @@
 %}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%{{{                           Preprocessor                               %
+%{{{                               Scope                                  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{frame}[fragile]
+    \frametitle{\declarelesson Scope}
+    \begin{lstlisting}[basicstyle=\scriptsize\ttfamily\color{codefg}]
+int globalVar;
+
+namespace SomeNamespace {
+    int namespaceVar;
+
+    class SomeClass {
+        static int classVar;
+
+        int instanceVar; // aka member variable
+
+        void someMethod() {
+            int methodVar;
+
+            if (someCondition) {
+                int localVar;
+            }
+        }
+    }
+}
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\declarelesson Scope}
+
+    \rowcolors{2}{codecomment}{themegray}
+    \begin{table}[tl]
+        \begin{tabular}{p{3cm}p{2.5cm}p{2.5cm}}
+            \rowcolor{codebg}
+            \color{white} Variable & \color{white} Lifetime & \color{white} Lexical Scope\\
+                          global & global & global \\
+                       namespace & global & namespace \\
+                        class & global & class \\
+                     instance & instance & class \\
+                     method / function & function & function \\
+                     block & block & block \\
+        \end{tabular}
+    \end{table}
+    \begin{itemize}
+        \item Concepts of \emph{lifetime} and \emph{lexical scope} are important
+    \end{itemize}
+\end{frame}
+%}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                    Local Variable Declaration                        %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% C variable declaration
+\stepcounter{rulecount}
+\begin{frame}[fragile]
+    \frametitle{\declarerule Declare variables locally}
+    \begin{lstlisting}[title=In ANSI C variables must be declared at the beginning of scope]
+int someFunc() 
+    struct foo;
+    struct bar;
+    /* ... another 15 declarations */
+
+    /* 
+     * use foo.
+     * more lines of code
+     */
+
+    /* 
+     * start using bar
+     */
+ }
+    \end{lstlisting}
+\end{frame}
+
+% Local variable declaration C++
+\begin{frame}[fragile]
+    \frametitle{\declarerule Declare variables locally}
+    \begin{lstlisting}[title=In C++ variables can be declared in the middle of scope where they are used]
+int someFunc() {
+    struct foo;
+    // use foo
+
+    struct bar;
+    // use bar
+
+    // ...
+ }
+    \end{lstlisting}
+    \begin{itemize}
+        \item Declares intent to reader and compiler
+            \begin{itemize}
+                \item \alert{Readability}
+                \item \alert{Efficiency} (compiler optimization)
+            \end{itemize}
+        \item Reduces variable scope
+            \begin{itemize}
+                \item less potential for error
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+%}}}
+
+% TODO pointers vs references somwhere here?
+
+% TODO const correctness somewhere here?
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                           Preprocessor                               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Preprocessor}
 \frame{\sectionpage}
@@ -508,114 +616,11 @@ inline T abs(T radius) {
 %}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%{{{                               Scope                                  %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}[fragile]
-    \frametitle{\declarelesson Scope}
-    \begin{lstlisting}[basicstyle=\scriptsize\ttfamily\color{codefg}]
-int globalVar;
-
-namespace SomeNamespace {
-    int namespaceVar;
-
-    class SomeClass {
-        static int classVar;
-
-        int instanceVar; // aka member variable
-
-        void someMethod() {
-            int methodVar;
-
-            if (someCondition) {
-                int localVar;
-            }
-        }
-    }
-}
-    \end{lstlisting}
-\end{frame}
-
-\begin{frame}
-    \frametitle{\declarelesson Scope}
-
-    \rowcolors{2}{codecomment}{themegray}
-    \begin{table}[tl]
-        \begin{tabular}{p{3cm}p{2.5cm}p{2.5cm}}
-            \rowcolor{codebg}
-            \color{white} Variable & \color{white} Lifetime & \color{white} Lexical Scope\\
-                          global & global & global \\
-                       namespace & global & namespace \\
-                        class & global & class \\
-                     instance & instance & class \\
-                     method / function & function & function \\
-                     block & block & block \\
-        \end{tabular}
-    \end{table}
-    \begin{itemize}
-        \item Concepts of \emph{lifetime} and \emph{lexical scope} are important
-    \end{itemize}
-\end{frame}
-%}}}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%{{{                    Local Variable Declaration                        %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% C variable declaration
-\stepcounter{rulecount}
-\begin{frame}[fragile]
-    \frametitle{\declarerule Declare variables locally}
-    \begin{lstlisting}[title=In ANSI C variables must be declared at the beginning of scope]
-int someFunc() 
-    struct foo;
-    struct bar;
-    /* ... another 15 declarations */
-
-    /* 
-     * use foo.
-     * 40 lines of code
-     */
-
-    /* 
-     * start using bar
-     */
- }
-    \end{lstlisting}
-\end{frame}
-
-% Local variable declaration C++
-\begin{frame}[fragile]
-    \frametitle{\declarerule Declare variables locally}
-    \begin{lstlisting}[title=In C++ variables can be declared in the middle of scope where they are used]
-int someFunc() {
-    struct foo;
-    // use foo
-
-    struct bar;
-    // use bar
-
-    // ...
- }
-    \end{lstlisting}
-    \begin{itemize}
-        \item Declares intent to reader and compiler
-            \begin{itemize}
-                \item \alert{Readability}
-                \item \alert{Efficiency} (compiler optimization)
-            \end{itemize}
-        \item Reduces variable scope
-            \begin{itemize}
-                \item less potential for error
-            \end{itemize}
-    \end{itemize}
-\end{frame}
-%}}}
-
-% TODO: Start lesson here on objects, and intersperse rules
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %{{{                              Classes                                 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Classes}
+\frame{\sectionpage}
 
 % Class intro
 \begin{frame}[fragile]
@@ -631,6 +636,7 @@ struct Mansion {
     \begin{itemize}
         \item Useful for describing aggregate concepts
         \item All data accessible by any function
+        \item POD (Plain Old Data)
     \end{itemize}
 \end{frame}
 
@@ -737,13 +743,34 @@ protected: // private, accessible by derived classes
         \item Can be private, public, and protected 
     \end{itemize}
     \begin{lstlisting}[title=Writing a method]
-class Mansion { // members private by default
+class Mansion {
     int floors;
     int roomsPerFloor;
 
 public:
     int getTotalRooms() {
         return this->floors * this->roomsPerFloor;
+    }
+};
+    \end{lstlisting}
+\end{frame}
+
+% this optional
+\begin{frame}[fragile]
+    \frametitle{\declarelesson Classes }
+    \framesubtitle{Methods}
+    \begin{itemize}
+        \item implicit \texttt{this} pointer is optional
+    \end{itemize}
+    \begin{lstlisting}[title=Equivalent]
+class Mansion {
+public:
+    int getTotalRooms() {
+        return this->floors * this->roomsPerFloor;
+    }
+
+    int getTotalRooms() {
+        return floors * roomsPerFloor;
     }
 };
     \end{lstlisting}
@@ -763,6 +790,7 @@ public:
 
 Mansion myMansion;
 Mansion* mansionPointer;
+
 int total = myMansion.getTotalRooms();
 total = mansionPointer->getTotalRooms();
     \end{lstlisting}
@@ -810,32 +838,179 @@ int total = getTotalRooms(mansionPointer);
     \framesubtitle{Constructors}
     \begin{itemize}
         \item Members have to be initialized on creation (esp. if private)
-        \item C++ 
+        \item C++ provides constructors for initialization
+        \item A "method" named the same as the class
+        \item Members can be initialized in initialization list
     \end{itemize}
-    \begin{lstlisting}[title=\texttt{this} pointer idiom in C]
-int getTotalRooms(Mansion* this) {
-    return this->floors * this->roomsPerFloor;
-}
+    \begin{lstlisting}[title=Default Constructor]
+class Mansion {
+    int floors;
+    int roomsPerFloor;
+
+public:
+    Mansion() : floors(3), roomsPerFloor(7) { }
+};
+
+Mansion defaultMansion; // 3 floors, 7 rooms per floor
+    \end{lstlisting}
+\end{frame}
+
+% constructor with arguments
+\begin{frame}[fragile]
+    \frametitle{\declarelesson Classes }
+    \framesubtitle{Constructors}
+    \begin{itemize}
+        \item Constructors can have arguments
+        \item As many constructors as you want (overloading)
+    \end{itemize}
+    \begin{lstlisting}[title=Constructor with arguments]
+class Mansion {
+public:
+    Mansion() : floors(3), roomsPerFloor(7) { }
+    Mansion(int f, int totalRooms)
+        : floors(f),
+          roomsPerFloor(totalRooms/floors) { }
+};
+
+// 3 floors, 7 rooms per floor
+Mansion defaultMansion; 
+// 2 floors, 5 rooms per floor
+Mansion customMansion(2, 10); 
+    \end{lstlisting}
+\end{frame}
+%}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                         Copy Constructor                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+    \frametitle{\declarelesson Classes }
+    \framesubtitle{Copy Constructor}
+    \begin{itemize}
+        \item Objects can be copied
+        \item Need to preserve inner state, and resources
+        \item Use copy constructor
+    \end{itemize}
+    \begin{lstlisting}[title=Copy Constructor]
+class Car {
+    Wheel* wheel; // unique wheel per car
+
+public:
+    Car(Car const& other)
+        : wheel(new Wheel(other.wheel)) { }
+};
+
+Car myCar;
+Car copy(myCar); // calls copy constructor
+Car anotherCopy = myCar; // also calls copy constructor
+    \end{lstlisting}
+\end{frame}
+
+\stepcounter{rulecount}
+\begin{frame}[fragile]
+    \frametitle{\declarerule Define Copy Constructors }
+    \framesubtitle{When necessary}
+    \begin{itemize}
+        \item Compiler implicitly generates copy constructor when no explicit one exists
+        \item Compiler copy constructor blindly copies values
+            \begin{itemize}
+                \item OK for POD and value aggregates
+                \item Bad for objects with pointer members
+                \item Bad for objects with state
+            \end{itemize}
+    \end{itemize}
+    \begin{lstlisting}[title=Copy Constructor]
+class Car {
+    Wheel* wheel;
+    // no user copy constructor
+    // compiler generates "blind copy" constructor
+};
+
+Car myCar;
+Car copy(myCar); // calls copy constructor
+// myCar and copy share the same wheel
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{\declarerule Define Copy Constructors }
+    \framesubtitle{When necessary}
+    \begin{itemize}
+        \item Forgetting to explicitly define a copy constructor 
+            changes class semantics
+        \item Define your own copy constructor when
+            \begin{itemize}
+                \item Object has pointer members
+                \item Object is a state machine
+                \item Creation relies on outside state
+                \item ...
+            \end{itemize}
+        \item Can make copy constructor private to prevent copying
+    \end{itemize}
+\end{frame}
+%}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                       Initialization lists                           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% TODO: Behind the scenes, initializer list vs assignment
+% effect on memory initialization
+\stepcounter{rulecount}
+\begin{frame}[fragile]
+    \frametitle{\declarerule Prefer initialization lists}
+    \framesubtitle{In Constructors}
+    % TODO: animate?
+    \begin{itemize}
+        \item Objects not in initialization list are default initialized
+    \end{itemize}
+    \begin{lstlisting}[title=Assignment in constructor]
+class Client {
+    Socket sock;
+
+public:
+    Client(IPAddress host) {
+        sock = Socket(host);
+    }
+};
     \end{lstlisting}
     \begin{itemize}
-        \item Gives insight into how methods are implemented
-    \end{itemize}
-    \begin{lstlisting}[title=Calling an object's method]
-int total = mansionPointer->getTotalRooms();
-    \end{lstlisting}
-    \begin{lstlisting}[title=Behind the scenes]
-int total = getTotalRooms(mansionPointer);
-    \end{lstlisting}
-    \begin{itemize}
-        \item Methods stored just as functions in final executable (once)
-        \item Separate from object's members
-        \item Methods work as functions acting on objects
+        \item Default constructor is called for \texttt{sock} member
+        \item Temporary \texttt{Socket} object constructed from \texttt{host}
+        \item Assignment operator called to copy temporary into \texttt{sock}
+        \item Temporary is destroyed
     \end{itemize}
 \end{frame}
 
+\begin{frame}[fragile]
+    \frametitle{\declarerule Prefer initialization lists}
+    \begin{lstlisting}[title=Initialization list]
+class Client {
+    Socket sock;
+
+public:
+    Client(IPAddress host) : sock(host) { }
+};
+    \end{lstlisting}
+    \begin{itemize}
+        \item \texttt{sock} constructed from \texttt{host}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{\declarerule Prefer initialization lists}
+    \framesubtitle{Summary}
+    \begin{itemize}
+        \item Efficient for objects
+        \item All initialization in one place (readability)
+    \end{itemize}
+\end{frame}
 %}}}
 
 % TODO: Destructors
+
+% TODO: The Rule of 3
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %{{{                          New and delete                              %
@@ -914,7 +1089,9 @@ delete[] richArea;
 
 % TODO: RAII epic sauce
 
-% TODO: 3 ways in C to do error handling
+% TODO: assignment operator
+
+% TODO: 3 ways in C to do error handling vs exceptions
 
 \end{document}
 
