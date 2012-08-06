@@ -385,7 +385,122 @@ int someFunc() {
 \end{frame}
 %}}}
 
-% TODO pointers vs references somwhere here?
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                      Pointers vs References                          %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Pointer description
+\begin{frame}
+    \frametitle{\declarelesson Pointers and References}
+    \framesubtitle{Pointers *}
+    \begin{itemize}
+        \item Pointers are useful
+            \begin{itemize}
+                \item Refer to a place in memory
+                \item Can represent an array
+                \item Can create complex data structures
+                \item Lightweight way to pass large objects
+            \end{itemize}
+        \item Pointers are dangerous
+            \begin{itemize}
+                \item Value unrestricted
+                \item Memory management
+                \item Pointer arithmetic tricky
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% Pointer usage
+\begin{frame}[fragile]
+    \frametitle{\declarelesson Pointers and References}
+    \framesubtitle{Pointers *}
+    \begin{lstlisting}[title=Pointer Usage]
+struct Foo {
+    int a;
+    int b;
+}
+
+Foo myFoo;
+
+Foo* pFoo;              // uninitialized pointer
+
+pFoo = &myFoo;          // pointing to an object
+
+Foo anotherFoo = *pFoo; // dereferencing
+
+pFoo->a = 42;           // accessing member
+    \end{lstlisting}
+\end{frame}
+
+% Reference description
+\begin{frame}
+    \frametitle{\declarelesson Pointers and References}
+    \framesubtitle{References \&}
+    \begin{itemize}
+        \item References more restricted
+            \begin{itemize}
+                \item Cannot be \texttt{NULL}
+                \item Has to be initialized at creation
+                \item Cannot be reassigned
+            \end{itemize}
+        \item References are safer
+            \begin{itemize}
+                \item Useful for object passing
+                \item Acts as an alias to a value
+            \end{itemize}
+        \item Implemented as a pointer behind the scenes
+    \end{itemize}
+\end{frame}
+
+% reference usage
+\begin{frame}[fragile]
+    \frametitle{\declarelesson Pointers and References}
+    \framesubtitle{References \&}
+    \begin{lstlisting}[title=Reference Usage]
+struct Foo {
+    int a;
+    int b;
+}
+
+Foo myFoo;
+
+Foo& aliasFoo = myFoo;     // aliasing a value
+
+Foo anotherFoo = aliasFoo; // copy
+
+aliasFoo.a = 42;           // accessing member
+    \end{lstlisting}
+\end{frame}
+
+% Summary
+\begin{frame}
+    \frametitle{\declarelesson Pointers and References}
+    \framesubtitle{Summary}
+
+    % TODO: add more properties
+    \rowcolors{2}{codecomment}{themegray}
+    \begin{table}[tl]
+        \begin{tabular}{p{4.5cm}p{2.5cm}p{2.5cm}}
+            \rowcolor{codebg}
+            \color{white} Property & \color{white} Pointer & \color{white}  Reference \\
+              can be \texttt{NULL} & yes & no \\
+                 can be reassigned & yes & no \\
+                 can uninitialized & yes & no \\
+           arithmetic manipulation & yes & no \\
+                     member access & -> & . \\
+        \end{tabular}
+    \end{table}
+    \begin{itemize}
+        \item When references can be used, each row is one less headache
+    \end{itemize}
+\end{frame}
+
+\stepcounter{rulecount}
+\begin{frame}
+    \frametitle{\declarerule Prefer Reference to Pointers}
+
+\end{frame}
+%}}}
 
 % TODO const correctness somewhere here?
 
@@ -935,7 +1050,7 @@ Car copy(myCar); // calls copy constructor
 
 \begin{frame}[fragile]
     \frametitle{\declarerule Define Copy Constructors }
-    \framesubtitle{When necessary}
+    \framesubtitle{Summary}
     \begin{itemize}
         \item Forgetting to explicitly define a copy constructor 
             changes class semantics
