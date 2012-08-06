@@ -330,7 +330,7 @@ namespace SomeNamespace {
     \end{itemize}
 \end{frame}
 
-% TODO: :: syntax for accessing namespaces
+% TODO: :: syntax for accessing
 
 %}}}
 
@@ -449,9 +449,10 @@ pFoo->a = 42;           // accessing member
         \item References are safer
             \begin{itemize}
                 \item Useful for object passing
-                \item Acts as an alias to a value
+                \item Act as an alias to a value
             \end{itemize}
         \item Implemented as a pointer behind the scenes
+        \item But usage is restricted at compile time (\alert{Safety})
     \end{itemize}
 \end{frame}
 
@@ -475,17 +476,43 @@ aliasFoo.a = 42;           // accessing member
     \end{lstlisting}
 \end{frame}
 
+% use in functions
+\begin{frame}[fragile]
+    \frametitle{\declarelesson Pointers and References}
+    \framesubtitle{References \&}
+    \begin{lstlisting}[title=Function declaration]
+void doSomething(Foo& foo) {
+    foo.a = 42;
+}
+    \end{lstlisting}
+    \begin{itemize}
+        \item Callee knows object in usable state
+            \begin{itemize}
+                \item No \texttt{NULL}/error check
+            \end{itemize}
+    \end{itemize}
+    \begin{lstlisting}[title=Function call]
+Foo myFoo;
+
+doSomething(myFoo);
+    \end{lstlisting}
+    \begin{itemize}
+        \item Caller knows that function assumes usable state
+        \item References declare intent to reader (\alert{Readability})
+        \item Compiler enforced (\alert{Safety})
+    \end{itemize}
+\end{frame}
+
 % Summary
 \begin{frame}
     \frametitle{\declarelesson Pointers and References}
     \framesubtitle{Summary}
-
-    % TODO: add more properties
     \rowcolors{2}{codecomment}{themegray}
     \begin{table}[tl]
         \begin{tabular}{p{4.5cm}p{2.5cm}p{2.5cm}}
             \rowcolor{codebg}
             \color{white} Property & \color{white} Pointer & \color{white}  Reference \\
+                       polymorphic & yes & yes \\
               can be \texttt{NULL} & yes & no \\
                  can be reassigned & yes & no \\
                  can uninitialized & yes & no \\
@@ -498,18 +525,19 @@ aliasFoo.a = 42;           // accessing member
     \end{itemize}
 \end{frame}
 
+% Prefer references
 \stepcounter{rulecount}
 \begin{frame}
     \frametitle{\declarerule Prefer References to Pointers}
-    \fontsize{14pt}{16}\selectfont
+    \fontsize{12pt}{14}\selectfont
     \begin{itemize}
+        \item Use \emph{references} always, unless you can't
         \item Use \emph{pointers} when
             \begin{itemize}
-    \fontsize{12pt}{13}\selectfont
+    \fontsize{10pt}{11}\selectfont
                 \item passing a NULL pointer is valid semantically
                 \item requiring pointer arithmetic (e.g. arrays)
             \end{itemize}
-        \item Use \emph{references} for everything else
     \end{itemize}
 \end{frame}
 %}}}
