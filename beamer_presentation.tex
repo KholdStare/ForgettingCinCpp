@@ -329,6 +329,9 @@ namespace SomeNamespace {
         \item Concepts of \emph{lifetime} and \emph{lexical scope} are important
     \end{itemize}
 \end{frame}
+
+% TODO: :: syntax for accessing namespaces
+
 %}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -497,8 +500,17 @@ aliasFoo.a = 42;           // accessing member
 
 \stepcounter{rulecount}
 \begin{frame}
-    \frametitle{\declarerule Prefer Reference to Pointers}
-
+    \frametitle{\declarerule Prefer References to Pointers}
+    \fontsize{14pt}{16}\selectfont
+    \begin{itemize}
+        \item Use \emph{pointers} when
+            \begin{itemize}
+    \fontsize{12pt}{13}\selectfont
+                \item passing a NULL pointer is valid semantically
+                \item requiring pointer arithmetic (e.g. arrays)
+            \end{itemize}
+        \item Use \emph{references} for everything else
+    \end{itemize}
 \end{frame}
 %}}}
 
