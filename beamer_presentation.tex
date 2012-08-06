@@ -542,7 +542,80 @@ doSomething(myFoo);
 \end{frame}
 %}}}
 
-% TODO const correctness somewhere here?
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                         Const correctness                            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% immutability
+\begin{frame}[fragile]
+    \frametitle{\declarelesson Const correctness}
+    \framesubtitle{Immutability}
+    \begin{itemize}
+        \item Objects are mutable by default
+            \begin{itemize}
+                \item Value can be modified
+            \end{itemize}
+    \end{itemize}
+    \begin{lstlisting}[title=Mutable object]
+void doSomething(Foo& foo) {
+    foo.a++;
+}
+    \end{lstlisting}
+    \begin{itemize}
+        \item Mutability can be undesirable in some cases
+            \begin{itemize}
+                \item Want to ensure function call will not modify value
+                \item Avoid potential race conditions in concurrent code
+            \end{itemize}
+        \item Need to express immutability
+    \end{itemize}
+\end{frame}
+
+% const keyword
+\begin{frame}[fragile]
+    \frametitle{\declarelesson Const correctness}
+    \framesubtitle{\texttt{const} keyword}
+    \begin{lstlisting}[title=Variables can be declared \texttt{const}]
+// have to be initialized when declared
+Foo const myFoo = { 42, 7 }; 
+myFoo.a++; // Compilation Error! Cannot modify
+    \end{lstlisting}
+    \begin{lstlisting}[title=Function declaration]
+// promises the value will not be modified
+void doSomething(Foo const& foo) {
+    foo.a++; // Compilation Error! Cannot modify
+}
+    \end{lstlisting}
+\end{frame}
+
+% right to left reading
+\begin{frame}[fragile]
+    \frametitle{\declarelesson Const correctness}
+    \framesubtitle{\texttt{const} keyword}
+    \begin{itemize}
+        \item Variable declarations can be read from right to left
+    \end{itemize}
+    \begin{lstlisting}[title=const Pointers and references]
+// myFoo is a const Foo
+Foo const myFoo; 
+
+// myFoo is a reference to const Foo
+Foo const& myFoo; 
+
+// myFoo is a pointer to const Foo
+Foo const* myFoo; 
+
+// myFoo is a const pointer to const Foo
+Foo const* const myFoo; 
+    \end{lstlisting}
+    \begin{itemize}
+        \item Easy to follow if qualifiers are after type
+    \end{itemize}
+\end{frame}
+
+% TODO: mention concurrency
+
+%}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %{{{                           Preprocessor                               %
@@ -979,7 +1052,10 @@ int total = getTotalRooms(mansionPointer);
     \end{itemize}
 \end{frame}
 
+%TODO: const methods?
+
 %TODO: diagram of methods in memory?
+
 %}}}
 
 % TODO: Constructors
