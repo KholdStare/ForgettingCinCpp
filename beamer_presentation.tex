@@ -537,6 +537,7 @@ doSomething(myFoo);
     \fontsize{10pt}{11}\selectfont
                 \item passing a NULL pointer is valid semantically
                 \item requiring pointer arithmetic (e.g. arrays)
+                \item dealing with heap allocation
             \end{itemize}
     \end{itemize}
 \end{frame}
@@ -556,7 +557,7 @@ doSomething(myFoo);
                 \item Value can be modified
             \end{itemize}
     \end{itemize}
-    \begin{lstlisting}[title=Mutable object]
+    \begin{lstlisting}[title=Passing mutable object]
 void doSomething(Foo& foo) {
     foo.a++;
 }
@@ -578,13 +579,40 @@ void doSomething(Foo& foo) {
     \begin{lstlisting}[title=Variables can be declared \texttt{const}]
 // have to be initialized when declared
 Foo const myFoo = { 42, 7 }; 
+
 myFoo.a++; // Compilation Error! Cannot modify
     \end{lstlisting}
     \begin{lstlisting}[title=Function declaration]
 // promises the value will not be modified
-void doSomething(Foo const& foo) {
+void doSomethingConst(Foo const& foo) {
+
     foo.a++; // Compilation Error! Cannot modify
 }
+    \end{lstlisting}
+    \begin{itemize}
+        \item \texttt{const} tells compiler object cannot be modified
+    \end{itemize}
+\end{frame}
+
+% const functions
+\begin{frame}[fragile]
+    \frametitle{\declarelesson Const correctness}
+    \framesubtitle{\texttt{const} keyword}
+    \begin{lstlisting}[title=Mutable objects can be used as const arguments]
+// promises the value will not be modified
+void doSomethingConst(Foo const& foo);
+
+Foo myFoo;                  // mutable
+
+doSomethingConst(myFoo);    // works!
+    \end{lstlisting}
+    \begin{lstlisting}[title=Immutable objects cannot be used as non-const arguments]
+// value might be modified
+void doSomethingNonConst(Foo& foo);
+
+Foo const myFoo = { 42, 7 }; // immutable
+
+doSomethingNonConst(myFoo);  // Error!
     \end{lstlisting}
 \end{frame}
 
@@ -607,14 +635,52 @@ Foo const* myFoo;
 
 // myFoo is a const pointer to const Foo
 Foo const* const myFoo; 
+
+// myFoo is a const pointer to mutable Foo
+Foo* const myFoo; 
+    \end{lstlisting}
+\end{frame}
+
+% Rul about const correctness
+\stepcounter{rulecount}
+\begin{frame}[fragile]
+    \frametitle{\declarerule Follow const correctness}
+    \framesubtitle{Ambiguities}
+    \begin{itemize}
+        \item Const correctness can resolve ambiguities
+    \end{itemize}
+    \begin{lstlisting}[title=Ambiguous declaration without const]
+void parse(File* file, XMLTree* xml);
     \end{lstlisting}
     \begin{itemize}
-        \item Easy to follow if qualifiers are after type
+        \item Are both arguments inputs?
+        \item Is one an output?
+        \item Are any arguments optional? (previous rule)
+    \end{itemize}
+    \begin{lstlisting}[title=Const correct]
+void parse(File const& file, XMLTree& xml);
+    \end{lstlisting}
+    \begin{itemize}
+        \item Apparent that \texttt{file} is only read.
+        \item \texttt{xml} is modified using data from \texttt{file}
     \end{itemize}
 \end{frame}
 
-% TODO: mention concurrency
-
+% const correct summary
+\begin{frame}[fragile]
+    \frametitle{\declarerule Follow const correctness}
+    \framesubtitle{Summary}
+    \begin{itemize}
+        \item Use \texttt{const} everywhere you can
+        \item Declares intent to the reader (\alert{Readability})
+            \begin{itemize}
+                \item Code is self documenting
+                \item Easier to reason about code functionality
+                \item Easier to reason about code correctness
+            \end{itemize}
+        \item Const correctness enforced by the compiler (\alert{Safety})
+    \end{itemize}
+\end{frame}
 %}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1058,7 +1124,6 @@ int total = getTotalRooms(mansionPointer);
 
 %}}}
 
-% TODO: Constructors
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %{{{                           Constructors                               %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
