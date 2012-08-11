@@ -142,6 +142,10 @@
         \item Wealth of misinformation on the internet about C++
         \item The name C++ gives the wrong (and lasting) first impression
         \item Most code examples could have come from 1985
+        \item A language is not just its syntax
+        \begin{itemize}
+            \item Collective experience provides idioms
+        \end{itemize}
     \end{itemize}
 }
 
@@ -343,9 +347,9 @@ namespace SomeNamespace {
 \begin{frame}[fragile]
     \frametitle{\declarerule Declare variables locally}
     \begin{lstlisting}[title=In ANSI C variables must be declared at the beginning of scope]
-int someFunc() 
-    struct foo;
-    struct bar;
+int someFunc() {
+    struct Foo foo;
+    struct Bar bar;
     /* ... another 15 declarations */
 
     /* 
@@ -365,10 +369,10 @@ int someFunc()
     \frametitle{\declarerule Declare variables locally}
     \begin{lstlisting}[title=In C++ variables can be declared in the middle of scope where they are used]
 int someFunc() {
-    struct foo;
+    struct Foo foo;
     // use foo
 
-    struct bar;
+    struct Bar bar;
     // use bar
 
     // ...
@@ -1148,6 +1152,7 @@ public:
 };
 
 Mansion defaultMansion; // 3 floors, 7 rooms per floor
+Mansion* heapMansion = new Mansion;
     \end{lstlisting}
 \end{frame}
 
@@ -1251,7 +1256,6 @@ Car copy(myCar); // calls copy constructor
 %{{{                       Initialization lists                           %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% TODO: Behind the scenes, initializer list vs assignment
 % effect on memory initialization
 \stepcounter{rulecount}
 \begin{frame}[fragile]
@@ -1294,7 +1298,7 @@ public:
     \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]
+\begin{frame}
     \frametitle{\declarerule Prefer initialization lists}
     \framesubtitle{Summary}
     \begin{itemize}
@@ -1304,9 +1308,51 @@ public:
 \end{frame}
 %}}}
 
-% TODO: Destructors
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                            Destructors                               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% TODO: The Rule of 3
+% destructor overview
+\begin{frame}[fragile]
+    \frametitle{\declarelesson Classes}
+    \framesubtitle{Destructors}
+    \begin{itemize}
+        \item Destructor called at end of object \emph{lifetime}
+        \item A "method" named after class, prefixed by \textasciitilde
+            \begin{itemize}
+                \item Takes no arguments
+            \end{itemize}
+        \item Destroys all value members
+        \item If no explicit destructor defined, implicit one generated
+        \item Used to release resources and clean up state
+    \end{itemize}
+    \begin{lstlisting}[title=Cleanup in destructor]
+class Socket {
+public:
+    ~Socket() {
+        // close socket if it hasn't been already
+        this->close();
+    }
+};
+    \end{lstlisting}
+\end{frame}
+
+% when can an object's lifetime end
+\begin{frame}
+    \frametitle{\declarelesson Classes}
+    \framesubtitle{Destructors}
+    \begin{itemize}
+        \item Destructor called at end of object \emph{lifetime}
+        \item Object destroyed at end of scope if allocated statically
+            \begin{itemize}
+                \item End of block scope
+                \item End of function scope
+                \item Destruction of parent object
+            \end{itemize}
+        \item Object destroyed when deleted if allocated on the heap
+    \end{itemize}
+\end{frame}
+%}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %{{{                          New and delete                              %
@@ -1382,6 +1428,8 @@ delete[] richArea;
     \end{lstlisting}
 \end{frame}
 %}}}
+
+% TODO: The Rule of 3
 
 % TODO: RAII epic sauce
 
