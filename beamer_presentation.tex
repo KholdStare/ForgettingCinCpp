@@ -17,7 +17,7 @@
 
 
 \usepackage{inconsolata} % for code
-\usepackage{lmodern}
+\usepackage{lmodern} % normal text
 \renewcommand*\familydefault{\sfdefault} 
 \usepackage[T1]{fontenc}
 %}}}
@@ -179,23 +179,23 @@
 }
 
 % Guiding Principles
-\begin{frame}
-    \frametitle{Motivation}
-    \framesubtitle{Guiding Principles}
-    % TODO: move to STL?
-    \begin{exampleblock}{}
-        ``If I have seen further, it is by standing on the shoulders of giants''
+%\begin{frame}
+    %\frametitle{Motivation}
+    %\framesubtitle{Guiding Principles}
+    %% TODO: move to STL?
+    %\begin{exampleblock}{}
+        %``If I have seen further, it is by standing on the shoulders of giants''
 
-        \hspace*\fill{\small--- Isaac Newton}
-    \end{exampleblock}
+        %\hspace*\fill{\small--- Isaac Newton}
+    %\end{exampleblock}
 
-    \begin{exampleblock}{}
-        ``Make interfaces easy to use correctly and hard to use incorrectly''
+    %\begin{exampleblock}{}
+        %``Make interfaces easy to use correctly and hard to use incorrectly''
 
-        \hspace*\fill{\small--- Scott Meyers}
-    \end{exampleblock}
+        %\hspace*\fill{\small--- Scott Meyers}
+    %\end{exampleblock}
 
-\end{frame}
+%\end{frame}
 
 \begin{frame}
     \frametitle{Method}
@@ -235,6 +235,15 @@
         \includegraphics[width=4cm]{220px-BjarneStroustrup.jpg}
     \end{columns}
 \end{frame}
+
+%}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                            Compilation                               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Compilation}
+\frame{\subsectionpage}
 
 % C Compilation
 \begin{frame}
@@ -287,6 +296,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %{{{                               Scope                                  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Scope}
+\frame{\subsectionpage}
 
 \begin{frame}[fragile]
     \frametitle{\declarelesson Scope}
@@ -395,6 +407,9 @@ int someFunc() {
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %{{{                      Pointers vs References                          %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Pointers and References}
+\frame{\subsectionpage}
 
 % Pointer description
 \begin{frame}
@@ -551,6 +566,9 @@ doSomething(myFoo);
 %{{{                         Const correctness                            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\subsection{Const correctness}
+\frame{\subsectionpage}
+
 % immutability
 \begin{frame}[fragile]
     \frametitle{\declarelesson Const correctness}
@@ -649,7 +667,7 @@ Foo* const myFoo;
 \stepcounter{rulecount}
 \begin{frame}[fragile]
     \frametitle{\declarerule Follow const correctness}
-    \framesubtitle{Ambiguities}
+    \framesubtitle{Resolving ambiguities}
     \begin{itemize}
         \item Const correctness can resolve ambiguities
     \end{itemize}
@@ -864,7 +882,7 @@ inline void swap(int& x, int& y) {
 
 \begin{lstlisting}
 inline double abs(double radius) {
-    return (x < 0) ? -x : x);
+    return (x < 0) ? -x : x;
 }
 \end{lstlisting}
 
@@ -1030,6 +1048,9 @@ protected: // private, accessible by derived classes
 %{{{                              Methods                                 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\subsection{Methods}
+\frame{\subsectionpage}
+
 % Class methods
 \begin{frame}[fragile]
     \frametitle{\declarelesson Classes }
@@ -1131,6 +1152,9 @@ int total = getTotalRooms(mansionPointer);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %{{{                           Constructors                               %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Constructors}
+\frame{\subsectionpage}
 
 % Introduction to constructors
 \begin{frame}[fragile]
@@ -1303,7 +1327,7 @@ public:
     \framesubtitle{Summary}
     \begin{itemize}
         \item Efficient for objects
-        \item All initialization in one place (readability)
+        \item All initialization in one place (\alert{readability})
     \end{itemize}
 \end{frame}
 %}}}
@@ -1312,17 +1336,21 @@ public:
 %{{{                            Destructors                               %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\subsection{Destructors}
+\frame{\subsectionpage}
+
 % destructor overview
 \begin{frame}[fragile]
     \frametitle{\declarelesson Classes}
     \framesubtitle{Destructors}
     \begin{itemize}
-        \item Destructor called at end of object \emph{lifetime}
-        \item A "method" named after class, prefixed by \textasciitilde
+        \item A "method" 
             \begin{itemize}
+                \item Named after class, prefixed by \textasciitilde
                 \item Takes no arguments
+                \item Called at end of object \emph{lifetime}
+                \item Destroys all value members
             \end{itemize}
-        \item Destroys all value members
         \item If no explicit destructor defined, implicit one generated
         \item Used to release resources and clean up state
     \end{itemize}
@@ -1332,6 +1360,7 @@ public:
     ~Socket() {
         // close socket if it hasn't been already
         this->close();
+        // any value member automatically destroyed 
     }
 };
     \end{lstlisting}
@@ -1342,7 +1371,10 @@ public:
     \frametitle{\declarelesson Classes}
     \framesubtitle{Destructors}
     \begin{itemize}
-        \item Destructor called at end of object \emph{lifetime}
+        \item When does an object's lifetime end?
+            \begin{itemize}
+                \item See scope table
+            \end{itemize}
         \item Object destroyed at end of scope if allocated statically
             \begin{itemize}
                 \item End of block scope
@@ -1350,6 +1382,11 @@ public:
                 \item Destruction of parent object
             \end{itemize}
         \item Object destroyed when deleted if allocated on the heap
+        \item Pointer members are not deleted!
+            \begin{itemize}
+                \item The memory for pointer released
+                \item The object it is pointing to is not
+            \end{itemize}
     \end{itemize}
 \end{frame}
 %}}}
@@ -1357,6 +1394,9 @@ public:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %{{{                          New and delete                              %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Heap Allocation}
+\frame{\subsectionpage}
 
 % Malloc and Free
 \stepcounter{rulecount}
@@ -1429,11 +1469,177 @@ delete[] richArea;
 \end{frame}
 %}}}
 
-% TODO: The Rule of 3
-
 % TODO: RAII epic sauce
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                         RAII EPIC SAUCE!                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{RAII resource management}
+\frame{\subsectionpage}
+
+% RAII intro
+\stepcounter{rulecount}
+\begin{frame}
+    \frametitle{\declarerule Use RAII}
+    \framesubtitle{Resources}
+    \begin{itemize}
+        \item What is RAII?
+            \begin{itemize}
+                \item We'll get to that...
+            \end{itemize}
+        \item A large problem in programming is resource management
+            \begin{itemize}
+                \item Memory allocation
+                \item IO handles
+                \item Domain specific resources
+            \end{itemize}
+        \item Besides core logic, need to manage
+            \begin{itemize}
+                \item Who allocates a resource
+                \item Who releases the resources
+            \end{itemize}
+        \item Usually error prone
+            \begin{itemize}
+                \item Forgetting to free a pointer
+                \item Forgetting to close a file
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% file handle example
+\begin{frame}[fragile]
+    \frametitle{\declarerule Use RAII}
+    \framesubtitle{Resources in C}
+    \begin{lstlisting}[title=Reading a file in C]
+void process(const char* filename) {
+    FILE* fp = fopen(filename, "r");
+
+    // other code
+
+    fclose(fp);
+}
+    \end{lstlisting}
+    \begin{itemize}
+        \item Relies on programmer to remember
+        \item In C++ any function can throw an exception
+    \end{itemize}
+\end{frame}
+
+% file leak
+\begin{frame}[fragile]
+    \frametitle{\declarerule Use RAII}
+    \framesubtitle{Resources in C}
+    \begin{lstlisting}[title=Forgetting to close]
+void process(const char* filename) {
+    FILE* fp = fopen(filename, "r");
+
+    // other code
+
+    // error handling
+    if (someCondition) {
+        return;
+    }
+
+    // more code
+
+    fclose(fp);
+}
+    \end{lstlisting}
+    \begin{itemize}
+        \item Whoops!
+    \end{itemize}
+\end{frame}
+
+% towards RAII
+\begin{frame}
+    \frametitle{\declarerule Use RAII}
+    \framesubtitle{Resources in C}
+    \begin{itemize}
+        \item In previous situation, need to ensure file closes when exiting function
+        \item What is triggered on scope exit?
+            \begin{itemize}
+                \item Local values are destroyed
+            \end{itemize}
+        \item Exploit destructor to close the file for us!
+        \item That is RAII
+            \begin{itemize}
+                \item Resource Acquisition Is Initialization
+                \item Bjarne admits it's a bad name :P
+            \end{itemize}
+        \item Let's do it!
+    \end{itemize}
+\end{frame}
+
+% file handle class
+\begin{frame}[fragile]
+    \frametitle{\declarerule Use RAII}
+    \framesubtitle{RAII class to handle files}
+    \begin{lstlisting}[title=Problems begone!]
+class FileHandle {
+    FILE* fp;
+
+public:
+    FileHandle(const char* filename) :
+        fp( fopen(filename, "r") ) { }
+
+    ~FileHandle() {
+        fclose(fp);
+    }
+
+    FILE* getHandle() const {
+        return fp;
+    }
+}
+    \end{lstlisting}
+\end{frame}
+
+% using RAII object
+\begin{frame}[fragile]
+    \frametitle{\declarerule Use RAII}
+    \framesubtitle{RAII class to handle files}
+    \begin{lstlisting}[title=Problems begone!]
+void process(const char* filename) {
+    FileHandle(filename);
+
+    // as many returns and exceptions
+    // as your heart desires
+}
+    \end{lstlisting}
+\end{frame}
+
+% quick summary
+\begin{frame}
+    \frametitle{\declarerule Use RAII}
+    \framesubtitle{Summary}
+    \begin{itemize}
+        \item<1->Resource Acquisition Is Initialization 
+        \item<1->Exploit object lifetime and destructors
+        \item<1->Put all resource cleanup in destructors
+        \item<1->Let the compiler clean up for you (\alert{Safety})
+        \item<2->But what about memory?
+    \end{itemize}
+\end{frame}
+%}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                          Smart Pointers                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\stepcounter{rulecount}
+\begin{frame}
+    \frametitle{\declarerule Use Smart Pointers}
+    \framesubtitle{RAII for pointers}
+    \begin{itemize}
+        \item What if I told you,
+        \item "You never have to explicitly delete a pointer ever again!"
+    \end{itemize}
+\end{frame}
+
+%}}}
 
 % TODO: assignment operator
+
+% TODO: The Rule of 3
 
 % TODO: 3 ways in C to do error handling vs exceptions
 
