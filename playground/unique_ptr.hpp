@@ -17,9 +17,9 @@
 
 // workarounds for compilers- breaks some aliasing rules
 #ifdef __GNUC__ 
-  #define BOOST_MOVE_ATTRIBUTE_MAY_ALIAS __attribute__((__may_alias__)) 
+  #define MY_MOVE_ATTRIBUTE_MAY_ALIAS __attribute__((__may_alias__)) 
 #else 
-  #define BOOST_MOVE_ATTRIBUTE_MAY_ALIAS
+  #define MY_MOVE_ATTRIBUTE_MAY_ALIAS
 #endif
 
 namespace my {
@@ -32,7 +32,7 @@ class rv : public T
     ~rv();
     rv(rv const&);
     void operator=(rv const&);
-} BOOST_MOVE_ATTRIBUTE_MAY_ALIAS;
+} MY_MOVE_ATTRIBUTE_MAY_ALIAS;
 
 template <typename T>
 struct default_deleter {
@@ -91,8 +91,10 @@ public:
     }
 
     void reset(T* p = NULL) {
-        delete m_ptr;
-        m_ptr = p;
+        if (m_ptr != p) {
+            delete m_ptr;
+            m_ptr = p;
+        }
     }
 
     rv<unique_ptr>& move()
