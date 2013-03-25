@@ -144,83 +144,9 @@ void process(const char* filename) {
     \end{itemize}
 \end{frame}
 
-% RAII intro
-\stepcounter{rulecount}
-\begin{frame}
-    \frametitle{\declarerule Use RAII}
-    \framesubtitle{Resources}
-    \begin{itemize}
-        \item What is RAII?
-            \begin{itemize}
-                \item We'll get to that...
-            \end{itemize}
-        \item A large problem in programming is resource management
-            \begin{itemize}
-                \item Memory allocation
-                \item IO handles
-                \item Domain specific resources
-            \end{itemize}
-        \item Besides core logic, need to manage
-            \begin{itemize}
-                \item Who allocates a resource
-                \item Who releases the resources
-            \end{itemize}
-        \item Usually error prone
-            \begin{itemize}
-                \item Forgetting to free a pointer
-                \item Forgetting to close a file
-            \end{itemize}
-    \end{itemize}
-\end{frame}
-
-% file handle example
-\begin{frame}[fragile]
-    \frametitle{\declarerule Use RAII}
-    \framesubtitle{Resources in C}
-    \begin{lstlisting}[title=Reading a file in C]
-void process(const char* filename) {
-    FILE* fp = fopen(filename, "r");
-
-    // other code
-
-    fclose(fp);
-}
-    \end{lstlisting}
-    \begin{itemize}
-        \item Relies on programmer to remember
-        \item In C++ any function can throw an exception
-    \end{itemize}
-\end{frame}
-
-% file leak
-\begin{frame}[fragile]
-    \frametitle{\declarerule Use RAII}
-    \framesubtitle{Resources in C}
-    \begin{lstlisting}[title=Forgetting to close]
-void process(const char* filename) {
-    FILE* fp = fopen(filename, "r");
-
-    // other code
-
-    // error handling
-    if (someCondition) {
-        return;
-    }
-
-    // more code
-
-    fclose(fp);
-}
-    \end{lstlisting}
-    \begin{itemize}
-        \item Whoops!
-    \end{itemize}
-\end{frame}
-
 % towards RAII
 \begin{frame}
-    \frametitle{\declarerule Use RAII}
-    \framesubtitle{Resources in C}
+    \frametitle{RAII}
     \begin{itemize}
         \item In previous situation, need to ensure file closes when exiting function
         \item What is triggered on scope exit?
@@ -239,7 +165,7 @@ void process(const char* filename) {
 
 % file handle class
 \begin{frame}[fragile]
-    \frametitle{\declarerule Use RAII}
+    \frametitle{RAII}
     \framesubtitle{RAII class to handle files}
     \begin{lstlisting}[title=Problems begone!]
 class FileHandle {
@@ -253,7 +179,7 @@ public:
         fclose(fp);
     }
 
-    FILE* getHandle() const {
+    FILE* get() const {
         return fp;
     }
 }
@@ -262,7 +188,7 @@ public:
 
 % using RAII object
 \begin{frame}[fragile]
-    \frametitle{\declarerule Use RAII}
+    \frametitle{RAII}
     \framesubtitle{RAII class to handle files}
     \begin{lstlisting}[title=Problems begone!]
 void process(const char* filename) {
@@ -276,32 +202,16 @@ void process(const char* filename) {
 
 % quick summary
 \begin{frame}
-    \frametitle{\declarerule Use RAII}
+    \frametitle{RAII}
     \framesubtitle{Summary}
     \begin{itemize}
         \item<1->Resource Acquisition Is Initialization 
         \item<1->Exploit object lifetime and destructors
         \item<1->Put all resource cleanup in destructors
-        \item<1->Let the compiler clean up for you (\alert{Safety})
+        \item<1->Let the compiler clean up for you
         \item<2->But what about memory?
     \end{itemize}
 \end{frame}
-%}}}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%{{{                          Smart Pointers                              %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\stepcounter{rulecount}
-\begin{frame}
-    \frametitle{\declarerule Use Smart Pointers}
-    \framesubtitle{RAII for pointers}
-    \begin{itemize}
-        \item What if I told you,
-        \item "You never have to explicitly delete a pointer ever again!"
-    \end{itemize}
-\end{frame}
-
 %}}}
 
 \end{document}
