@@ -1,6 +1,10 @@
 \input{preamble.tex}
 
-\title{RAII}
+\setbeamercolor{frametitle}{fg=themeblue}
+\setbeamercolor{title}{fg=themeblue}
+
+\title{Automatic Resource Management in C++}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %{{{                         Main Presentation                            %
@@ -13,15 +17,112 @@
 \section{Introduction}
 \frame{\sectionpage}
 
-\frame {
-    \frametitle{What is the talk about?}
-    \begin{itemize}
-        \item<2->Overview of C++, from a C programmer's perspective
-        \item<2->Good C++ coding style
-        \item<2->More than "C with classes"
-        \item<2->Fixing bad habbits learnt from C.
-    \end{itemize}
+% trick question
+\begin{frame}[fragile]
+    \frametitle{Manual Resource Management}
+    \begin{lstlisting}[title=See anything wrong?]
+void process(const char* filename) {
+    FILE* fp = fopen(filename, "r");
+
+
+
+
+    do_file_stuff(fp);
+
+
+
+
+
+    fclose(fp);
 }
+    \end{lstlisting}
+\end{frame}
+
+% trick question 2
+\begin{frame}[fragile]
+    \frametitle{Manual Resource Management}
+    \begin{lstlisting}[title=See anything wrong?]
+void process(const char* filename) {
+    FILE* fp = fopen(filename, "r");
+
+
+
+    // lots of code ...
+
+
+    // more code ...
+
+
+
+    fclose(fp);
+}
+    \end{lstlisting}
+\end{frame}
+
+% file leak
+\begin{frame}[fragile]
+    \frametitle{Manual Resource Management}
+    \begin{lstlisting}[title=Forgetting to close!]
+void process(const char* filename) {
+    FILE* fp = fopen(filename, "r");
+
+    // other code ...
+
+    // error handling
+    if (someCondition) {
+        return;
+    }
+
+    // more code ...
+
+    fclose(fp);
+}
+    \end{lstlisting}
+\end{frame}
+
+% manual should set off alarm
+\begin{frame}[fragile]
+    \frametitle{Manual Resource Management}
+    \begin{itemize}
+        \item Explicit management should set off an alarm
+            \begin{itemize}
+                \item no more \texttt{fclose}
+                \item no more \texttt{delete}
+            \end{itemize}
+        \item I hope to convince you of a better way
+    \end{itemize}
+\end{frame}
+
+% error prone
+\begin{frame}
+    \frametitle{Manual Resource Management}
+    \framesubtitle{Error prone}
+    \begin{itemize}
+        \item Many examples of resources
+            \begin{itemize}
+                \item Memory allocation
+                \item IO handles
+                \item Mutexes
+                \item Socket connections
+                \item Domain specific resources
+            \end{itemize}
+        \item Many ways to fail
+            \begin{itemize}
+                \item Early exit via \texttt{return} or \texttt{break}
+                \item Exceptions
+                \item No explicit ownership (who deallocates?)
+            \end{itemize}
+        \item Manual resource management ala C is very error prone!
+            \begin{itemize}
+                \item Doubly so with exception in C++!
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+
+%}}}
+
+% TODO: composability
 
 % TODO: RAII epic sauce
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -30,6 +131,18 @@
 
 \subsection{RAII resource management}
 \frame{\subsectionpage}
+
+\begin{frame}
+    \frametitle{RAII}
+    \begin{itemize}
+        \item<1->Thankfully a resource is already managed for us
+            \begin{itemize}
+                \item<2->The stack!
+            \end{itemize}
+        \item<2->Destructor called at end of scope
+        \item<2->Can we exploit this?
+    \end{itemize}
+\end{frame}
 
 % RAII intro
 \stepcounter{rulecount}
