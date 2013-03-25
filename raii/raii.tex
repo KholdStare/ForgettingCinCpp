@@ -1,0 +1,197 @@
+\input{preamble.tex}
+
+\title{RAII}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                         Main Presentation                            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\frame{\titlepage}
+
+\section{Introduction}
+\frame{\sectionpage}
+
+\frame {
+    \frametitle{What is the talk about?}
+    \begin{itemize}
+        \item<2->Overview of C++, from a C programmer's perspective
+        \item<2->Good C++ coding style
+        \item<2->More than "C with classes"
+        \item<2->Fixing bad habbits learnt from C.
+    \end{itemize}
+}
+
+% TODO: RAII epic sauce
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                               RAII                                   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{RAII resource management}
+\frame{\subsectionpage}
+
+% RAII intro
+\stepcounter{rulecount}
+\begin{frame}
+    \frametitle{\declarerule Use RAII}
+    \framesubtitle{Resources}
+    \begin{itemize}
+        \item What is RAII?
+            \begin{itemize}
+                \item We'll get to that...
+            \end{itemize}
+        \item A large problem in programming is resource management
+            \begin{itemize}
+                \item Memory allocation
+                \item IO handles
+                \item Domain specific resources
+            \end{itemize}
+        \item Besides core logic, need to manage
+            \begin{itemize}
+                \item Who allocates a resource
+                \item Who releases the resources
+            \end{itemize}
+        \item Usually error prone
+            \begin{itemize}
+                \item Forgetting to free a pointer
+                \item Forgetting to close a file
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% file handle example
+\begin{frame}[fragile]
+    \frametitle{\declarerule Use RAII}
+    \framesubtitle{Resources in C}
+    \begin{lstlisting}[title=Reading a file in C]
+void process(const char* filename) {
+    FILE* fp = fopen(filename, "r");
+
+    // other code
+
+    fclose(fp);
+}
+    \end{lstlisting}
+    \begin{itemize}
+        \item Relies on programmer to remember
+        \item In C++ any function can throw an exception
+    \end{itemize}
+\end{frame}
+
+% file leak
+\begin{frame}[fragile]
+    \frametitle{\declarerule Use RAII}
+    \framesubtitle{Resources in C}
+    \begin{lstlisting}[title=Forgetting to close]
+void process(const char* filename) {
+    FILE* fp = fopen(filename, "r");
+
+    // other code
+
+    // error handling
+    if (someCondition) {
+        return;
+    }
+
+    // more code
+
+    fclose(fp);
+}
+    \end{lstlisting}
+    \begin{itemize}
+        \item Whoops!
+    \end{itemize}
+\end{frame}
+
+% towards RAII
+\begin{frame}
+    \frametitle{\declarerule Use RAII}
+    \framesubtitle{Resources in C}
+    \begin{itemize}
+        \item In previous situation, need to ensure file closes when exiting function
+        \item What is triggered on scope exit?
+            \begin{itemize}
+                \item Local values are destroyed
+            \end{itemize}
+        \item Exploit destructor to close the file for us!
+        \item That is RAII
+            \begin{itemize}
+                \item Resource Acquisition Is Initialization
+                \item Bjarne admits it's a bad name :P
+            \end{itemize}
+        \item Let's do it!
+    \end{itemize}
+\end{frame}
+
+% file handle class
+\begin{frame}[fragile]
+    \frametitle{\declarerule Use RAII}
+    \framesubtitle{RAII class to handle files}
+    \begin{lstlisting}[title=Problems begone!]
+class FileHandle {
+    FILE* fp;
+
+public:
+    FileHandle(const char* filename) :
+        fp( fopen(filename, "r") ) { }
+
+    ~FileHandle() {
+        fclose(fp);
+    }
+
+    FILE* getHandle() const {
+        return fp;
+    }
+}
+    \end{lstlisting}
+\end{frame}
+
+% using RAII object
+\begin{frame}[fragile]
+    \frametitle{\declarerule Use RAII}
+    \framesubtitle{RAII class to handle files}
+    \begin{lstlisting}[title=Problems begone!]
+void process(const char* filename) {
+    FileHandle(filename);
+
+    // as many returns and exceptions
+    // as your heart desires
+}
+    \end{lstlisting}
+\end{frame}
+
+% quick summary
+\begin{frame}
+    \frametitle{\declarerule Use RAII}
+    \framesubtitle{Summary}
+    \begin{itemize}
+        \item<1->Resource Acquisition Is Initialization 
+        \item<1->Exploit object lifetime and destructors
+        \item<1->Put all resource cleanup in destructors
+        \item<1->Let the compiler clean up for you (\alert{Safety})
+        \item<2->But what about memory?
+    \end{itemize}
+\end{frame}
+%}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                          Smart Pointers                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\stepcounter{rulecount}
+\begin{frame}
+    \frametitle{\declarerule Use Smart Pointers}
+    \framesubtitle{RAII for pointers}
+    \begin{itemize}
+        \item What if I told you,
+        \item "You never have to explicitly delete a pointer ever again!"
+    \end{itemize}
+\end{frame}
+
+%}}}
+
+\end{document}
+
+% Modeline for vim settings:
+% vim60:fdm=marker:
