@@ -92,7 +92,7 @@ public:
 
     void reset(T* p = NULL) {
         if (m_ptr != p) {
-            delete m_ptr;
+            clean_up();
             m_ptr = p;
         }
     }
