@@ -148,12 +148,12 @@ void process(const char* filename) {
 \begin{frame}
     \frametitle{RAII}
     \begin{itemize}
-        \item In previous situation, need to ensure file closes when exiting function
+        \item In example, need to ensure file closes
         \item What is triggered on scope exit?
             \begin{itemize}
-                \item Local values are destroyed
+                \item Local values destroyed
             \end{itemize}
-        \item Exploit destructor to close the file for us!
+        \item Exploit destructor to close the file!
         \item That is RAII
             \begin{itemize}
                 \item Resource Acquisition Is Initialization
@@ -209,7 +209,192 @@ void process(const char* filename) {
         \item<1->Exploit object lifetime and destructors
         \item<1->Put all resource cleanup in destructors
         \item<1->Let the compiler clean up for you
-        \item<2->But what about memory?
+        \item<2->What about other resources? (e.g. memory)
+        \item<2->What about transfering ownership?
+    \end{itemize}
+\end{frame}
+%}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                          Smart Pointers                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Ownership}
+\frame{\sectionpage}
+
+% ownership intro
+\begin{frame}
+    \frametitle{RAII}
+    \framesubtitle{Ownership}
+    \begin{itemize}
+        \item Previous example flawed
+        \item Copying object copies handle
+        \item Deallocated multiple times! Oops.
+        \item Need concept of ownership
+    \end{itemize}
+\end{frame}
+
+% different ownerships
+\begin{frame}
+    \frametitle{RAII}
+    \framesubtitle{Ownership}
+    \begin{itemize}
+        \item Can define and enforce ownership:
+            \begin{itemize}
+                \item Scope (cannot be transfered)
+                \item Unique ownership (only one owner at a time)
+                \item Shared (no "master" owner)
+            \end{itemize}
+        \item Understanding which one applies is critical
+        \item Have to \emph{enforce at compile time}
+            \begin{itemize}
+                \item Fail early
+                \item Reliability/Robustness
+            \end{itemize}
+        \item Let's generalize Scoped ownership
+    \end{itemize}
+\end{frame}
+
+% scoped_ptr intro
+\begin{frame}
+    \frametitle{\texttt{scoped\_ptr}}
+    \begin{itemize}
+        \item Works as \texttt{FileHandle} before
+            \begin{itemize}
+                \item But generic for pointers
+            \end{itemize}
+        \item Enforces scope ownership
+            \begin{itemize}
+                \item Copy constructor is private
+                \item Copying does not compile
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% scoped_ptr impl
+\begin{frame}[fragile]
+    \frametitle{\texttt{scoped\_ptr}}
+    \begin{lstlisting}[title=Implementation]
+template <typename T>
+class scoped_ptr {
+    T* m_ptr;
+
+    scoped_ptr(scoped_ptr const& other);
+
+public:
+    scoped_ptr(T* ptr) : m_ptr(ptr) { }
+
+    ~scoped_ptr() { delete m_ptr; }
+
+    T* get() { return m_ptr; }
+
+    T* operator ->() { returm m_ptr; }
+};
+    \end{lstlisting}
+\end{frame}
+
+% scoped_ptr usage
+\begin{frame}[fragile]
+    \frametitle{\texttt{scoped\_ptr}}
+    \begin{lstlisting}[title=Usage]
+class BigClass {
+    // ...
+};
+
+// assert scope ownership at initialization
+scoped_ptr<BigClass> obj( new BigClass );
+
+// can use as ordinary pointer
+obj->member = 42;
+
+// can get the raw pointer
+BigClass* raw = obj.get();
+
+// deletes pointer at end of scope
+    \end{lstlisting}
+\end{frame}
+
+
+% TODO: finish
+% scoped_ptr usage
+\begin{frame}[fragile]
+    \frametitle{\texttt{scoped\_ptr}}
+    \begin{lstlisting}[title=Compile time enforcement]
+do_something( BigClass* );
+do_something( scoped_ptr<BigClass> );
+
+scoped_ptr<BigClass> obj( new BigClass );
+
+// calls first overload.
+// scope still owns resource
+do_something( obj.get() );
+
+// all of the following do not compile
+
+// cannot copy handle ERROR
+scoped_ptr<BigClass> obj_copy( obj );
+
+// cannot transfer ownership ERROR
+do_something( obj );
+    \end{lstlisting}
+\end{frame}
+
+% scoped_ptr summary
+\begin{frame}[fragile]
+    \frametitle{\texttt{scoped\_ptr}}
+    \framesubtitle{Summary}
+    \begin{itemize}
+        \item RAII for pointers
+        \item Enforces scope ownership
+            \begin{itemize}
+                \item Copy constructor is private
+                \item Copying does not compile
+            \end{itemize}
+        \item No runtime overhead
+            \begin{itemize}
+                \item Generates same code you would write
+                \item Make compiler work for you
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+%}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                       Other Smart Pointers                           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Other Smart Pointers}
+\frame{\sectionpage}
+
+% scoped_ptr summary
+\begin{frame}[fragile]
+    \frametitle{Other smart pointers}
+    \begin{itemize}
+        \item Covered \texttt{scoped\_ptr} for Scope ownership
+        \item \texttt{std::unique\_ptr} for unique ownership
+            \begin{itemize}
+                \item Allows explicit transfer of ownership
+            \end{itemize}
+        \item \texttt{std::shared\_ptr} for shared ownership
+            \begin{itemize}
+                \item Reference counted
+            \end{itemize}
+        \item Available in STL in C++11
+            \begin{itemize}
+                \item Bonus: manage arbitrary resources through templates
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% demo
+\begin{frame}[fragile]
+    \frametitle{\texttt{unique\_ptr} in C++03}
+    \begin{itemize}
+        \item \texttt{std::unique\_ptr} available only in C++11
+        \item Uses new C++11 features to differentiate between \emph{copies} and \emph{moves}
+        \item Can be emulated in C++03
+        \item Demo of my implementation
     \end{itemize}
 \end{frame}
 %}}}
