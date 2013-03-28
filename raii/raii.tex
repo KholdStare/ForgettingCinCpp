@@ -14,6 +14,8 @@
 
 \frame{\titlepage}
 
+\frame{\tableofcontents}
+
 \section{Introduction}
 \frame{\sectionpage}
 
@@ -114,7 +116,7 @@ void process(const char* filename) {
             \end{itemize}
         \item Manual resource management ala C is very error prone!
             \begin{itemize}
-                \item Doubly so with exception in C++!
+                \item Doubly so with exceptions in C++!
             \end{itemize}
     \end{itemize}
 \end{frame}
@@ -129,8 +131,8 @@ void process(const char* filename) {
 %{{{                               RAII                                   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{RAII resource management}
-\frame{\subsectionpage}
+\section{RAII resource management}
+\frame{\sectionpage}
 
 \begin{frame}
     \frametitle{RAII}
@@ -148,10 +150,10 @@ void process(const char* filename) {
 \begin{frame}
     \frametitle{RAII}
     \begin{itemize}
-        \item In example, need to ensure file closes
+        \item In example, need to close file before scope exit
         \item What is triggered on scope exit?
             \begin{itemize}
-                \item Local values destroyed
+                \item Destructor called for stack values
             \end{itemize}
         \item Exploit destructor to close the file!
         \item That is RAII
@@ -209,6 +211,9 @@ void process(const char* filename) {
         \item<1->Exploit object lifetime and destructors
         \item<1->Put all resource cleanup in destructors
         \item<1->Let the compiler clean up for you
+            \begin{itemize}
+                \item No runtime overhead (in this case)
+            \end{itemize}
         \item<2->What about other resources? (e.g. memory)
         \item<2->What about transfering ownership?
     \end{itemize}
@@ -228,7 +233,7 @@ void process(const char* filename) {
     \framesubtitle{Ownership}
     \begin{itemize}
         \item Previous example flawed
-        \item Copying object copies handle
+        \item Copying RAII object copies handle
         \item Deallocated multiple times! Oops.
         \item Need concept of ownership
     \end{itemize}
@@ -246,7 +251,7 @@ void process(const char* filename) {
                 \item Shared (no "master" owner)
             \end{itemize}
         \item Understanding which one applies is critical
-        \item Have to \emph{enforce at compile time}
+        \item Prefer to \emph{enforce at compile time}
             \begin{itemize}
                 \item Fail early
                 \item Reliability/Robustness
@@ -254,6 +259,9 @@ void process(const char* filename) {
         \item Let's generalize Scoped ownership
     \end{itemize}
 \end{frame}
+
+\subsection{\texttt{scoped\_ptr}}
+\frame{\subsectionpage}
 
 % scoped_ptr intro
 \begin{frame}
@@ -279,6 +287,7 @@ template <typename T>
 class scoped_ptr {
     T* m_ptr;
 
+    // copy constructor is private
     scoped_ptr(scoped_ptr const& other);
 
 public:
@@ -314,14 +323,13 @@ BigClass* raw = obj.get();
     \end{lstlisting}
 \end{frame}
 
-
 % TODO: finish
 % scoped_ptr usage
 \begin{frame}[fragile]
     \frametitle{\texttt{scoped\_ptr}}
     \begin{lstlisting}[title=Compile time enforcement]
 do_something( BigClass* );
-do_something( scoped_ptr<BigClass> );
+do_something( scoped_ptr<BigClass> ); // illegal
 
 scoped_ptr<BigClass> obj( new BigClass );
 
@@ -364,8 +372,14 @@ do_something( obj );
 %{{{                       Other Smart Pointers                           %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Other Smart Pointers}
-\frame{\sectionpage}
+\subsection{Other Smart Pointers}
+\frame{\subsectionpage}
+
+% TODO: raises level of abstraction.
+%       associates higher level concept of ownership
+%       No need to infer ownership from low level code each time
+
+% TODO: factory example
 
 % scoped_ptr summary
 \begin{frame}[fragile]
