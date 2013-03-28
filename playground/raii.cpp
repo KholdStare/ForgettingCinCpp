@@ -6,16 +6,22 @@
 
 struct dummy {
     int val;
+    int const id;
+    static int gId;
 
-    dummy() : val(42) {
-        printf("Constructed! %d\n", val);
+    dummy() : val(42), id(gId++) {
+        printf("Constructed ID %d! %d\n", id, val);
     }
 
     ~dummy() {
-        printf("Destructed! %d\n", val);
+        printf("Destructed ID %d! %d\n", id, val);
     }
 };
+int dummy::gId = 0;
 
+my::unique_ptr<dummy> factory() {
+    return my::unique_ptr<dummy>(new dummy);
+}
 
 void do_something(dummy* d) {
     d->val++;
@@ -39,6 +45,7 @@ int main(int argc, char const *argv[])
     //my::unique_ptr<dummy> d2(d); // does not compile
     
     // But can transfer ownership
+    printf("Transfering to another unique\n");
     my::unique_ptr<dummy> d2 = d.move();
     assert(d2.get() != NULL);
     assert(d.get() == NULL);
@@ -52,11 +59,20 @@ int main(int argc, char const *argv[])
     // Transfer ownership to another function
     do_unique(d2.move());
     assert(d2.get() == NULL);
-    printf("About to exit\n");
+
+    printf("Calling factory without assignment\n");
+    factory();
+
+    printf("Calling factory with assignment to unique\n");
+    my::unique_ptr<dummy> d3 = factory();
+
+    printf("Resetting contents of last unique\n");
+    d3.reset(new dummy);
 
     // example showing customization of deleter
     file_example();
 
+    printf("About to exit\n");
     return 0;
 }
 

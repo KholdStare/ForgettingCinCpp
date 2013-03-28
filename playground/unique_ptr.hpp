@@ -34,6 +34,7 @@ class rv : public T
     void operator=(rv const&);
 } MY_MOVE_ATTRIBUTE_MAY_ALIAS;
 
+/** deletes a pointer */
 template <typename T>
 struct default_deleter {
     void operator()(T* ptr)
@@ -41,6 +42,7 @@ struct default_deleter {
         delete ptr;
     }
 };
+// TODO: specialize for array delete
 
 /**
  * Unique ptr
