@@ -124,9 +124,7 @@ void process(const char* filename) {
 
 %}}}
 
-% TODO: composability
 
-% TODO: RAII epic sauce
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %{{{                               RAII                                   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -353,7 +351,7 @@ do_something( obj );
     \framesubtitle{Summary}
     \begin{itemize}
         \item RAII for pointers
-        \item Enforces scope ownership
+        \item Enforces scope ownership \emph{at compile time}
             \begin{itemize}
                 \item Copy constructor is private
                 \item Copying does not compile
@@ -380,6 +378,10 @@ do_something( obj );
 %       No need to infer ownership from low level code each time
 
 % TODO: factory example
+
+% TODO Scott meyers quote
+
+% TODO: composability
 
 % scoped_ptr summary
 \begin{frame}[fragile]
