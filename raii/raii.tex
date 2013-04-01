@@ -147,6 +147,7 @@ void process(const char* filename) {
 % towards RAII
 \begin{frame}
     \frametitle{RAII}
+    \framesubtitle{Key Insight}
     \begin{itemize}
         \item In example, need to close file before scope exit
         \item What is triggered on scope exit?
@@ -253,6 +254,10 @@ void process(const char* filename) {
             \begin{itemize}
                 \item Fail early
                 \item Reliability/Robustness
+                    \begin{exampleblock}{}
+                        ``Make interfaces easy to use correctly and hard to use incorrectly.''
+                        \\*\hspace*\fill{\small--- Scott Meyers, Effective C++}
+                    \end{exampleblock}
             \end{itemize}
         \item Let's generalize Scoped ownership
     \end{itemize}
@@ -384,7 +389,7 @@ do_something( obj );
 % TODO: composability
 
 % scoped_ptr summary
-\begin{frame}[fragile]
+\begin{frame}
     \frametitle{Other smart pointers}
     \begin{itemize}
         \item Covered \texttt{scoped\_ptr} for Scope ownership
@@ -404,15 +409,131 @@ do_something( obj );
 \end{frame}
 
 % demo
-\begin{frame}[fragile]
+\begin{frame}
     \frametitle{\texttt{unique\_ptr} in C++03}
     \begin{itemize}
         \item \texttt{std::unique\_ptr} available only in C++11
         \item Uses new C++11 features to differentiate between \emph{copies} and \emph{moves}
         \item Can be emulated in C++03
-        \item Demo of my implementation
     \end{itemize}
 \end{frame}
+%}}}
+
+\section{Demo}
+\frame{\sectionpage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                               Conclusions                               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Implications/Conclusions}
+\frame{\sectionpage}
+
+% Implications intro
+\begin{frame}
+    \frametitle{Implications}
+    \begin{itemize}
+        \item Saw implementations
+            \begin{itemize}
+                \item Simple
+            \end{itemize}
+        \item Saw usage
+            \begin{itemize}
+                \item Hard to misuse
+            \end{itemize}
+        \item What are higher-level implications?
+    \end{itemize}
+\end{frame}
+
+% TODO: add all points here?
+\begin{frame}
+    \frametitle{Implications}
+    \begin{itemize}
+        \item Easy composition
+            \begin{itemize}
+                \item Scales to many resources in scope
+                \item Scales to complex control structures
+            \end{itemize}
+        \item Higher level of abstraction
+            \begin{itemize}
+                \item Explicit ownership
+                \item Semantics at a glance
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Composition}
+    \begin{lstlisting}[basicstyle=\scriptsize\ttfamily\color{codefg},title=Without RAII]
+FILE* in1 = fopen("in1.txt", "r");
+if (!process(in1)) {
+    fclose(in1);
+    return false;
+}
+
+FILE* in2 = fopen("in2.txt", "r");
+if (!process(in1, in2)) {
+    fclose(in1);
+    fclose(in2);
+    return false;
+}
+
+FILE* out = fopen("out.txt", "w");
+process(in1, in2, out);
+fclose(in1);
+fclose(in2);
+fclose(out);
+return true;
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Composition}
+    \begin{lstlisting}[basicstyle=\scriptsize\ttfamily\color{codefg},title=With RAII]
+FileHandle in1("in1.txt", "r");
+if (!process(in1)) {
+
+    return false;
+}
+
+FileHandle in2("in2.txt", "r");
+if (!process(in1, in2)) {
+
+
+    return false;
+}
+
+FileHandle out("out.txt", "w");
+process(in1, in2, out);
+
+
+
+return true;
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Abstraction}
+    \framesubtitle{Semantics at a glance}
+    \begin{lstlisting}[title=Raw pointer]
+// "I'm merely using the resource"
+// "Up to you to clean it up"
+void process(Resource& r);
+void process(Resource* r);
+    \end{lstlisting}
+
+    \begin{lstlisting}[title=Unique pointer]
+// "I assume ownership of the resource"
+// "You can't have it back"
+void process(unique_ptr<Resource> r);
+    \end{lstlisting}
+
+    \begin{lstlisting}[title=Shared pointer]
+// "I need this resource as well"
+void process(shared_ptr<Resource> r);
+    \end{lstlisting}
+\end{frame}
+
 %}}}
 
 \end{document}
