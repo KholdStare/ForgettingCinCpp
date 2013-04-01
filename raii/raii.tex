@@ -1,0 +1,421 @@
+\input{preamble.tex}
+
+\setbeamercolor{frametitle}{fg=themeblue}
+\setbeamercolor{title}{fg=themeblue}
+
+\title{Automatic Resource Management in C++}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                         Main Presentation                            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\frame{\titlepage}
+
+\frame{\tableofcontents}
+
+\section{Introduction}
+\frame{\sectionpage}
+
+% trick question
+\begin{frame}[fragile]
+    \frametitle{Manual Resource Management}
+    \begin{lstlisting}[title=See anything wrong?]
+void process(const char* filename) {
+    FILE* fp = fopen(filename, "r");
+
+
+
+
+    do_file_stuff(fp);
+
+
+
+
+
+    fclose(fp);
+}
+    \end{lstlisting}
+\end{frame}
+
+% trick question 2
+\begin{frame}[fragile]
+    \frametitle{Manual Resource Management}
+    \begin{lstlisting}[title=See anything wrong?]
+void process(const char* filename) {
+    FILE* fp = fopen(filename, "r");
+
+
+
+    // lots of code ...
+
+
+    // more code ...
+
+
+
+    fclose(fp);
+}
+    \end{lstlisting}
+\end{frame}
+
+% file leak
+\begin{frame}[fragile]
+    \frametitle{Manual Resource Management}
+    \begin{lstlisting}[title=Forgetting to close!]
+void process(const char* filename) {
+    FILE* fp = fopen(filename, "r");
+
+    // other code ...
+
+    // error handling
+    if (someCondition) {
+        return;
+    }
+
+    // more code ...
+
+    fclose(fp);
+}
+    \end{lstlisting}
+\end{frame}
+
+% manual should set off alarm
+\begin{frame}[fragile]
+    \frametitle{Manual Resource Management}
+    \begin{itemize}
+        \item Explicit management should set off an alarm
+            \begin{itemize}
+                \item no more \texttt{fclose}
+                \item no more \texttt{delete}
+            \end{itemize}
+        \item I hope to convince you of a better way
+    \end{itemize}
+\end{frame}
+
+% error prone
+\begin{frame}
+    \frametitle{Manual Resource Management}
+    \framesubtitle{Error prone}
+    \begin{itemize}
+        \item Many examples of resources
+            \begin{itemize}
+                \item Memory allocation
+                \item IO handles
+                \item Mutexes
+                \item Socket connections
+                \item Domain specific resources
+            \end{itemize}
+        \item Many ways to fail
+            \begin{itemize}
+                \item Early exit via \texttt{return} or \texttt{break}
+                \item Exceptions
+                \item No explicit ownership (who deallocates?)
+            \end{itemize}
+        \item Manual resource management ala C is very error prone!
+            \begin{itemize}
+                \item Doubly so with exceptions in C++!
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+
+%}}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                               RAII                                   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{RAII resource management}
+\frame{\sectionpage}
+
+\begin{frame}
+    \frametitle{RAII}
+    \begin{itemize}
+        \item<1->Thankfully a resource is already managed for us
+            \begin{itemize}
+                \item<2->The stack!
+            \end{itemize}
+        \item<2->Destructor called at end of scope
+        \item<2->Can we exploit this?
+    \end{itemize}
+\end{frame}
+
+% towards RAII
+\begin{frame}
+    \frametitle{RAII}
+    \begin{itemize}
+        \item In example, need to close file before scope exit
+        \item What is triggered on scope exit?
+            \begin{itemize}
+                \item Destructor called for stack values
+            \end{itemize}
+        \item Exploit destructor to close the file!
+        \item That is RAII
+            \begin{itemize}
+                \item Resource Acquisition Is Initialization
+                \item Bjarne admits it's a bad name :P
+            \end{itemize}
+        \item Let's do it!
+    \end{itemize}
+\end{frame}
+
+% file handle class
+\begin{frame}[fragile]
+    \frametitle{RAII}
+    \framesubtitle{RAII class to handle files}
+    \begin{lstlisting}[title=Problems begone!]
+class FileHandle {
+    FILE* fp;
+
+public:
+    FileHandle(const char* filename) :
+        fp( fopen(filename, "r") ) { }
+
+    ~FileHandle() {
+        fclose(fp);
+    }
+
+    FILE* get() const {
+        return fp;
+    }
+}
+    \end{lstlisting}
+\end{frame}
+
+% using RAII object
+\begin{frame}[fragile]
+    \frametitle{RAII}
+    \framesubtitle{RAII class to handle files}
+    \begin{lstlisting}[title=Problems begone!]
+void process(const char* filename) {
+    FileHandle(filename);
+
+    // as many returns and exceptions
+    // as your heart desires
+}
+    \end{lstlisting}
+\end{frame}
+
+% quick summary
+\begin{frame}
+    \frametitle{RAII}
+    \framesubtitle{Summary}
+    \begin{itemize}
+        \item<1->Resource Acquisition Is Initialization 
+        \item<1->Exploit object lifetime and destructors
+        \item<1->Put all resource cleanup in destructors
+        \item<1->Let the compiler clean up for you
+            \begin{itemize}
+                \item No runtime overhead (in this case)
+            \end{itemize}
+        \item<2->What about other resources? (e.g. memory)
+        \item<2->What about transfering ownership?
+    \end{itemize}
+\end{frame}
+%}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                          Smart Pointers                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Ownership}
+\frame{\sectionpage}
+
+% ownership intro
+\begin{frame}
+    \frametitle{RAII}
+    \framesubtitle{Ownership}
+    \begin{itemize}
+        \item Previous example flawed
+        \item Copying RAII object copies handle
+        \item Deallocated multiple times! Oops.
+        \item Need concept of ownership
+    \end{itemize}
+\end{frame}
+
+% different ownerships
+\begin{frame}
+    \frametitle{RAII}
+    \framesubtitle{Ownership}
+    \begin{itemize}
+        \item Can define and enforce ownership:
+            \begin{itemize}
+                \item Scope (cannot be transfered)
+                \item Unique ownership (only one owner at a time)
+                \item Shared (no "master" owner)
+            \end{itemize}
+        \item Understanding which one applies is critical
+        \item Prefer to \emph{enforce at compile time}
+            \begin{itemize}
+                \item Fail early
+                \item Reliability/Robustness
+            \end{itemize}
+        \item Let's generalize Scoped ownership
+    \end{itemize}
+\end{frame}
+
+\subsection{\texttt{scoped\_ptr}}
+\frame{\subsectionpage}
+
+% scoped_ptr intro
+\begin{frame}
+    \frametitle{\texttt{scoped\_ptr}}
+    \begin{itemize}
+        \item Works as \texttt{FileHandle} before
+            \begin{itemize}
+                \item But generic for pointers
+            \end{itemize}
+        \item Enforces scope ownership
+            \begin{itemize}
+                \item Copy constructor is private
+                \item Copying does not compile
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% scoped_ptr impl
+\begin{frame}[fragile]
+    \frametitle{\texttt{scoped\_ptr}}
+    \begin{lstlisting}[title=Implementation]
+template <typename T>
+class scoped_ptr {
+    T* m_ptr;
+
+    // copy constructor is private
+    scoped_ptr(scoped_ptr const& other);
+
+public:
+    scoped_ptr(T* ptr) : m_ptr(ptr) { }
+
+    ~scoped_ptr() { delete m_ptr; }
+
+    T* get() { return m_ptr; }
+
+    T* operator ->() { returm m_ptr; }
+};
+    \end{lstlisting}
+\end{frame}
+
+% scoped_ptr usage
+\begin{frame}[fragile]
+    \frametitle{\texttt{scoped\_ptr}}
+    \begin{lstlisting}[title=Usage]
+class BigClass {
+    // ...
+};
+
+// assert scope ownership at initialization
+scoped_ptr<BigClass> obj( new BigClass );
+
+// can use as ordinary pointer
+obj->member = 42;
+
+// can get the raw pointer
+BigClass* raw = obj.get();
+
+// deletes pointer at end of scope
+    \end{lstlisting}
+\end{frame}
+
+% TODO: finish
+% scoped_ptr usage
+\begin{frame}[fragile]
+    \frametitle{\texttt{scoped\_ptr}}
+    \begin{lstlisting}[title=Compile time enforcement]
+do_something( BigClass* );
+do_something( scoped_ptr<BigClass> ); // illegal
+
+scoped_ptr<BigClass> obj( new BigClass );
+
+// calls first overload.
+// scope still owns resource
+do_something( obj.get() );
+
+// all of the following do not compile
+
+// cannot copy handle ERROR
+scoped_ptr<BigClass> obj_copy( obj );
+
+// cannot transfer ownership ERROR
+do_something( obj );
+    \end{lstlisting}
+\end{frame}
+
+% scoped_ptr summary
+\begin{frame}[fragile]
+    \frametitle{\texttt{scoped\_ptr}}
+    \framesubtitle{Summary}
+    \begin{itemize}
+        \item RAII for pointers
+        \item Enforces scope ownership \emph{at compile time}
+            \begin{itemize}
+                \item Copy constructor is private
+                \item Copying does not compile
+            \end{itemize}
+        \item No runtime overhead
+            \begin{itemize}
+                \item Generates same code you would write
+                \item Make compiler work for you
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+%}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                       Other Smart Pointers                           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Other Smart Pointers}
+\frame{\subsectionpage}
+
+% TODO: raises level of abstraction.
+%       associates higher level concept of ownership
+%       No need to infer ownership from low level code each time
+
+% TODO: factory example
+
+% TODO Scott meyers quote
+
+% TODO: composability
+
+% scoped_ptr summary
+\begin{frame}[fragile]
+    \frametitle{Other smart pointers}
+    \begin{itemize}
+        \item Covered \texttt{scoped\_ptr} for Scope ownership
+        \item \texttt{std::unique\_ptr} for unique ownership
+            \begin{itemize}
+                \item Allows explicit transfer of ownership
+            \end{itemize}
+        \item \texttt{std::shared\_ptr} for shared ownership
+            \begin{itemize}
+                \item Reference counted
+            \end{itemize}
+        \item Available in STL in C++11
+            \begin{itemize}
+                \item Bonus: manage arbitrary resources through templates
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% demo
+\begin{frame}[fragile]
+    \frametitle{\texttt{unique\_ptr} in C++03}
+    \begin{itemize}
+        \item \texttt{std::unique\_ptr} available only in C++11
+        \item Uses new C++11 features to differentiate between \emph{copies} and \emph{moves}
+        \item Can be emulated in C++03
+        \item Demo of my implementation
+    \end{itemize}
+\end{frame}
+%}}}
+
+\end{document}
+
+% Modeline for vim settings:
+% vim60:fdm=marker:

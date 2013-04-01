@@ -1,0 +1,120 @@
+\documentclass[table]{beamer}
+
+%\usetheme[secheader]{Boadilla}
+\usetheme{Boadilla}
+\usecolortheme{beetle}
+\usepackage[latin1]{inputenc}
+\usepackage{listings} % for code syntax highlighting
+\usepackage{caption}
+
+\usepackage{color}
+\usepackage{booktabs} % better tables
+\usepackage{colortbl} % for coloring tables
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                               Fonts                                  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\usepackage{inconsolata} % for code
+\usepackage{lmodern} % normal text
+\renewcommand*\familydefault{\sfdefault} 
+\usepackage[T1]{fontenc}
+%}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                      Beamer Theme and colors                         %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ 
+\definecolor{themegray}{HTML}{999999}
+\definecolor{codebg}{HTML}{2C2C2C} % dark gray
+\definecolor{codefg}{HTML}{D0D0D0} % light gray
+\definecolor{themeblue}{HTML}{789FEF} % light blue
+\definecolor{codecomment}{HTML}{808080} % gray
+\definecolor{codestring}{HTML}{DFDF87} % for strings, light yellow
+\definecolor{themedarkblue}{HTML}{1D2561}
+\definecolor{themegreen}{HTML}{6ABF29}
+\definecolor{themeyellow}{HTML}{DFDF67}
+\definecolor{themered}{HTML}{E71717}
+\definecolor{themeorange}{HTML}{DF8F27}
+
+% tweak beamer theme
+\setbeamercolor{framesubtitle}{fg=white}
+\setbeamercolor{frametitle}{bg=codebg}
+\setbeamercolor{title}{bg=codebg}
+\setbeamercolor{palette primary}{bg=codebg}
+\setbeamercolor{author}{fg=white}
+\setbeamercolor{date}{fg=white}
+\setbeamercolor{alerted text}{fg=themered}
+\setbeamercolor{palette primary}{fg=codecomment}
+%}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                           Tweak Tables                               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\setlength{\aboverulesep}{0pt}
+\setlength{\belowrulesep}{0pt}
+\setlength{\extrarowheight}{.75ex}
+%}}}
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                          Tweak Listings                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% caption stuff
+\DeclareCaptionFormat{listing}{\parbox{\textwidth}{#1#2#3}}
+\captionsetup[lstlisting]{format=listing}
+
+\lstset{ %
+  language=C++,                % the language of the code
+  basicstyle=\small\ttfamily\color{codefg},           % the size of the fonts that are used for the code
+  backgroundcolor=\color{codebg},      % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  %frame=single,                   % adds a frame around the code
+  rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+  tabsize=2,                      % sets default tabsize to 2 spaces
+  captionpos=t,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  title=\lstname,                   % show the filename of files included with \lstinputlisting;
+                                  % also try caption instead of title
+  keywordstyle=\color{themeblue}\bfseries,
+  stringstyle=\color{codestring},
+  commentstyle=\color{codecomment},
+  escapeinside={\%*}{*)},            % if you want to add LaTeX within your code
+  morekeywords={*,...}               % if you want to add more keywords to the set
+}
+% ========================================== }}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                  Custom Macros for Presentation                      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% define a counter for rules
+\newcounter{rulecount}
+\newcommand{\declarerule}{\textbf{\color{themeblue}{Rule \therulecount:}} }
+
+\newcommand{\declarelesson}{\textbf{\color{themegreen}{Lesson:}} }
+
+% behind the scenes title
+\newcommand{\declarebts}{\textbf{\color{themeorange}{Behind the Scenes:}} }
+%}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{{{                            Author info                               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\author{Alexander Kondratskiy}
+\date{\today}
+% \institute[2008]{ECON 101}
+
+%}}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Modeline for vim settings:
+% vim60:fdm=marker:

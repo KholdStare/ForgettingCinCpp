@@ -1,0 +1,12 @@
+# tex output
+*.aux
+*.log
+*.nav
+*.out
+*.pdf
+*.snm
+*.toc
+*.vrb
+
+# swap files
+*.swp
