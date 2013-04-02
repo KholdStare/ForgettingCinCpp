@@ -121,6 +121,18 @@ void process(const char* filename) {
     \end{itemize}
 \end{frame}
 
+% Scott Meyers BLAM!
+\begin{frame}[fragile]
+    \frametitle{Manual Resource Management}
+    \framesubtitle{Goal}
+    \begin{itemize}
+            \begin{exampleblock}{}
+                ``Make interfaces easy to use correctly and hard to use incorrectly.''
+                \\*\hspace*\fill{\small--- Scott Meyers, Effective C++}
+            \end{exampleblock}
+        \item Need a more systematic approach for resources management
+    \end{itemize}
+\end{frame}
 
 %}}}
 
@@ -254,10 +266,6 @@ void process(const char* filename) {
             \begin{itemize}
                 \item Fail early
                 \item Reliability/Robustness
-                    \begin{exampleblock}{}
-                        ``Make interfaces easy to use correctly and hard to use incorrectly.''
-                        \\*\hspace*\fill{\small--- Scott Meyers, Effective C++}
-                    \end{exampleblock}
             \end{itemize}
         \item Let's generalize Scoped ownership
     \end{itemize}
@@ -384,8 +392,6 @@ do_something( obj );
 
 % TODO: factory example
 
-% TODO Scott meyers quote
-
 % TODO: composability
 
 % scoped_ptr summary
@@ -453,6 +459,7 @@ do_something( obj );
             \begin{itemize}
                 \item Scales to many resources in scope
                 \item Scales to complex control structures
+                \item Easy to maintain/add
             \end{itemize}
         \item Higher level of abstraction
             \begin{itemize}
@@ -532,6 +539,37 @@ void process(unique_ptr<Resource> r);
 // "I need this resource as well"
 void process(shared_ptr<Resource> r);
     \end{lstlisting}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Abstraction}
+    \framesubtitle{Semantics at a glance}
+    \begin{itemize}
+        \item Can tell usage straight away from the type
+            \begin{itemize}
+                \item Explicit ownership
+            \end{itemize}
+        \item Do not need to unravel low level details to get the big picture
+            \begin{itemize}
+                \item Implicit ownership
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Conclusion}
+    \framesubtitle{Use RAII}
+    \begin{itemize}
+        \item<1->Have RAII in the back of your mind at all times
+            \begin{itemize}
+                \item Can RAII simplify my problem?
+            \end{itemize}
+        \item<1->Abstract away ownership through smart pointers
+            \begin{itemize}
+                \item At little to no cost
+            \end{itemize}
+        \item<2->Finally, enjoy cringing at \texttt{delete}!
+    \end{itemize}
 \end{frame}
 
 %}}}
