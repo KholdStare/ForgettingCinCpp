@@ -519,6 +519,21 @@ return true;
     \end{lstlisting}
 \end{frame}
 
+\begin{frame}
+    \frametitle{Abstraction}
+    \framesubtitle{Semantics at a glance}
+    \begin{itemize}
+        \item Can tell usage straight away from the type
+            \begin{itemize}
+                \item Explicit ownership
+            \end{itemize}
+        \item Do not need to unravel low level details to get the big picture
+            \begin{itemize}
+                \item Implicit ownership
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
 \begin{frame}[fragile]
     \frametitle{Abstraction}
     \framesubtitle{Semantics at a glance}
@@ -542,21 +557,6 @@ void process(shared_ptr<Resource> r);
 \end{frame}
 
 \begin{frame}
-    \frametitle{Abstraction}
-    \framesubtitle{Semantics at a glance}
-    \begin{itemize}
-        \item Can tell usage straight away from the type
-            \begin{itemize}
-                \item Explicit ownership
-            \end{itemize}
-        \item Do not need to unravel low level details to get the big picture
-            \begin{itemize}
-                \item Implicit ownership
-            \end{itemize}
-    \end{itemize}
-\end{frame}
-
-\begin{frame}
     \frametitle{Conclusion}
     \framesubtitle{Use RAII}
     \begin{itemize}
@@ -568,7 +568,6 @@ void process(shared_ptr<Resource> r);
             \begin{itemize}
                 \item At little to no cost
             \end{itemize}
-        \item<2->Finally, enjoy cringing at \texttt{delete}!
     \end{itemize}
 \end{frame}
 
