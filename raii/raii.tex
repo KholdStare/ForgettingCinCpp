@@ -205,7 +205,7 @@ public:
     \framesubtitle{RAII class to handle files}
     \begin{lstlisting}[title=Problems begone!]
 void process(const char* filename) {
-    FileHandle(filename);
+    FileHandle f(filename);
 
     // as many returns and exceptions
     // as your heart desires
