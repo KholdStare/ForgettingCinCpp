@@ -49,9 +49,11 @@ int main(int argc, char const *argv[])
     my::unique_ptr<dummy> d2 = d.move();
     assert(d2.get() != NULL);
     assert(d.get() == NULL);
-    
+
     do_something(d2.get());
     assert(d2.get() != NULL);
+
+    printf("===========================================\n");
 
     // Copying to a function does not compile
     //do_unique(d2); // does not compile
@@ -60,14 +62,22 @@ int main(int argc, char const *argv[])
     do_unique(d2.move());
     assert(d2.get() == NULL);
 
+    printf("===========================================\n");
+
     printf("Calling factory without assignment\n");
     factory();
+
+    printf("===========================================\n");
 
     printf("Calling factory with assignment to unique\n");
     my::unique_ptr<dummy> d3 = factory();
 
+    printf("===========================================\n");
+
     printf("Resetting contents of last unique\n");
     d3.reset(new dummy);
+
+    printf("===========================================\n");
 
     // example showing customization of deleter
     file_example();
