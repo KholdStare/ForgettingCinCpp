@@ -35,6 +35,9 @@ void do_unique(my::unique_ptr<dummy> d) {
 
 void file_example();
 
+// =======================
+// Demo of unique_ptr usages
+
 int main(int argc, char const *argv[])
 {
     my::unique_ptr<dummy> d(new dummy);
@@ -89,7 +92,6 @@ int main(int argc, char const *argv[])
 
 // =======================
 // Demo of customizing unique_ptr for FILE handles
-// C is used to demonstrate what C++ adds (automatic closing)
 
 struct file_closer {
     void operator() (FILE* file) {
