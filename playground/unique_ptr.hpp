@@ -7,7 +7,7 @@
 //
 // Please see http://en.cppreference.com/w/cpp/memory/unique_ptr 
 // for the "canonical" interface for this class in C++11.
-// Most of the functionailty is preserved here
+// Most of the functionality is preserved here
 
 
 // this macro can be placed within a class definition to
